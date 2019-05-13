@@ -7,7 +7,7 @@ class SuperQuery(object):
     def __init__(self):
         """
         """
-        self.auth = { username: "", password: ""}
+        self.auth = { "username": "", "password": ""}
         self.explain = {}
         self.result = None
         self.connection = None
