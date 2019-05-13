@@ -12,13 +12,13 @@ class SuperQuery(object):
         self.result = None
         self.connection = None
 
-    def get_data():
+    def get_data(self, sql, get_stats=False):
         # Connect to the database.
         try:
             with self.connection.cursor() as cursor:
             
                 # SQL 
-                sql = "SELECT COUNT(*) FROM `yourproject.yourdataset.yourtable`"
+                sql = sql
                 
                 # Execute query.
                 cursor.execute(sql)
@@ -27,16 +27,9 @@ class SuperQuery(object):
                 print()
                 for row in cursor:
                     print(row)
-                # SQL 
-                sql = "explain;"
-                
-                # Execute query.
-                cursor.execute(sql)
-                
-                print ("cursor.description: ", cursor.description)
-                print()
-                for row in cursor:
-                    print(row)
+
+                if (get_stats):
+                    self.get_statistics(cursor):
         except:
             print("We couldn't get your data...")
             
@@ -45,7 +38,7 @@ class SuperQuery(object):
             connection.close()
 
 
-    def authenticate_connection(username, password, project_id, dataset_id):
+    def authenticate_connection(self, username, password, project_id, dataset_id):
         self.connection = pymysql.connect(host='proxy.superquery.io',
                              user=username,
                              password=password,                             
@@ -53,6 +46,19 @@ class SuperQuery(object):
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
         print ("Connection to superQuery successful!")
+
+    def get_statistics(cursor):
+
+        # SQL 
+        sql = "explain;"
+        
+        # Execute query.
+        cursor.execute(sql)
+        
+        print ("cursor.description: ", cursor.description)
+        print()
+        for row in cursor:
+            print(row)
 
     
 
