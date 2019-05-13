@@ -10,13 +10,12 @@ class SuperQuery(object):
         """
         self.auth = { "username": "", "password": ""}
         self.explain = {}
-        self.result = None
+        self.result = []
+        self.stats = {}
         self.connection = None
 
     def get_data(self, sql, get_stats=False):
         # Connect to the database.
-
-        result = []
 
         try:
             with self.connection.cursor() as cursor:
@@ -27,14 +26,13 @@ class SuperQuery(object):
                 # Execute query.
                 cursor.execute(sql)
                 
-                print("-------RESULT------")
                 for row in cursor:
-                    result.append(row)
+                    self.result.append(row)
 
-                if (len(result) == 1):
+                if (len(self.result) == 1):
                     print("1 row received")
                 else: 
-                    print("{0} rows received".format(len(result)))
+                    print("{0} rows received".format(len(self.result)))
 
                 if (get_stats):
                     self.get_statistics(cursor)
@@ -47,8 +45,7 @@ class SuperQuery(object):
             self.connection.close()
 
             # Return the data
-            return result
-
+            return self.result
 
     def authenticate_connection(self, username, password, project_id, dataset_id):
         self.connection = pymysql.connect(host='proxy.superquery.io',
@@ -67,9 +64,12 @@ class SuperQuery(object):
         # Execute query.
         cursor.execute(sql)
         
-        print("-------STATISTICS------")
         for row in cursor:
-            print(json.dumps(row, indent=4, sort_keys=True))
+            self.stats = row
+
+        self.stats = json.loads(self.stats["statistics"])
+
+
 
     
 
