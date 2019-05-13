@@ -1,4 +1,5 @@
 import pymysql.cursors 
+import json
 
 class SuperQuery(object):
     """
@@ -14,6 +15,9 @@ class SuperQuery(object):
 
     def get_data(self, sql, get_stats=False):
         # Connect to the database.
+
+        result = []
+
         try:
             with self.connection.cursor() as cursor:
             
@@ -23,18 +27,27 @@ class SuperQuery(object):
                 # Execute query.
                 cursor.execute(sql)
                 
+                print("-------RESULT------")
                 for row in cursor:
-                    print(row)
+                    result.append(row)
+
+                if (len(result) == 1):
+                    print("1 row received")
+                else: 
+                    print("{0} rows received".format(len(result)))
 
                 if (get_stats):
-                    print("We made it!")
                     self.get_statistics(cursor)
-        except:
+        except Exception as e:
             print("We couldn't get your data...")
+            print(e)
             
         finally:
             # Close connection.
             self.connection.close()
+
+            # Return the data
+            return result
 
 
     def authenticate_connection(self, username, password, project_id, dataset_id):
@@ -46,7 +59,7 @@ class SuperQuery(object):
                              cursorclass=pymysql.cursors.DictCursor)
         print ("Connection to superQuery successful!")
 
-    def get_statistics(cursor):
+    def get_statistics(self, cursor):
 
         # SQL 
         sql = "explain;"
@@ -54,9 +67,9 @@ class SuperQuery(object):
         # Execute query.
         cursor.execute(sql)
         
-        print("Query statistics: ")
+        print("-------STATISTICS------")
         for row in cursor:
-            print(row)
+            print(json.dumps(row, indent=4, sort_keys=True))
 
     
 
