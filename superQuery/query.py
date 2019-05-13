@@ -23,19 +23,18 @@ class SuperQuery(object):
                 # Execute query.
                 cursor.execute(sql)
                 
-                print ("cursor.description: ", cursor.description)
-                print()
                 for row in cursor:
                     print(row)
 
                 if (get_stats):
+                    print("We made it!")
                     self.get_statistics(cursor)
         except:
             print("We couldn't get your data...")
             
         finally:
             # Close connection.
-            connection.close()
+            self.connection.close()
 
 
     def authenticate_connection(self, username, password, project_id, dataset_id):
@@ -55,8 +54,7 @@ class SuperQuery(object):
         # Execute query.
         cursor.execute(sql)
         
-        print ("cursor.description: ", cursor.description)
-        print()
+        print("Query statistics: ")
         for row in cursor:
             print(row)
 
