@@ -29,7 +29,7 @@ class SuperQuery(object):
                     print(row)
 
                 if (get_stats):
-                    self.get_statistics(cursor):
+                    self.get_statistics(cursor)
         except:
             print("We couldn't get your data...")
             
