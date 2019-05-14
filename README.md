@@ -1,4 +1,5 @@
 # superQuery for Python
+[![Release version](https://img.shields.io/endpoint.svg?url=https://github.com/superquery/superPy/release/badget_version.json)
 
 Python package for using superQuery.
 
