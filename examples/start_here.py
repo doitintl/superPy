@@ -1,12 +1,28 @@
 from superQuery import SuperQuery
 
-sq = SuperQuery()
-sq.authenticate_connection("xxxxxxxx", "xxxxxxxxx", "yourProjectId", "yourDatasetId")
-mydata = sq.get_data("SELECT COUNT(*) as totalRows FROM `yourProjectId.yourDatasetId.yourTable`", get_stats=True)
+# Set to True if you wish to do a dryrun
+dryrun = False 
 
-print("Data:", mydata)
-print("Cost:", sq.stats["superQueryTotalCost"])
-print("Savings %:", sq.stats["saving"])
+sq = SuperQuery()
+mydata = sq.get_data(
+    "SELECT field FROM `projectId.datasetId.tableID` WHERE _PARTITIONTIME = \"20xx-xx-xx\"", 
+    get_stats=True, 
+    dry_run=dryrun, 
+    username="xxxxxxxxx", 
+    password="xxxxxxxxx")
+
+if (not dryrun):
+    print("Data rows:", mydata.stats["totalRows"])
+    print("Workflow: ", "DryRun" if (mydata.stats["superParams"]["isDryRun"]) else "Query")
+    print("Cost:", mydata.stats["superQueryTotalCost"])
+    print("Savings %:", mydata.stats["saving"])
+    print("Was cache used?:", mydata.stats["cacheUsed"] if "cacheUsed" in mydata.stats else False)
+    print("DryRun flag: ", mydata.stats["superParams"]["isDryRun"])
+else:
+    print("Workflow: ", "DryRun" if (mydata.stats["superParams"]["isDryRun"]) else "Query")
+    print("Potential BQ bytes scanned: ", mydata.stats["bigQueryTotalBytesProcessed"])
+    print("Potential Data rows:", mydata.stats["totalRows"])
+    print("DryRun flag: ", mydata.stats["superParams"]["isDryRun"])
 
 del sq
 
