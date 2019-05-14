@@ -13,45 +13,53 @@ class SuperQuery(object):
         self.result = AttributeDict({"data": [], "stats": None})
         self.connection = None
 
-    def get_data(self, sql, get_stats=False, username=None, password=None):
+    def get_data_by_key(self, key, username=None, password=None):
+        print("Up next...")
+
+    def get_data(self, sql, get_stats=False, dry_run=False, username=None, password=None):
         
         try:
 
             if ( (username != None) & (password != None) ):
                 self.authenticate_connection(username, password)
 
+            self.set_dry_run(dry_run)
+
             with self.connection.cursor() as cursor:
-            
-                # SQL 
-                sql = sql
-                
+        
                 # Execute query.
+                print("[sQ] Executing> ", sql)
                 cursor.execute(sql)
                 
-                for row in cursor:
-                    self.result["data"].append(row)
+                self.result["data"] = cursor.fetchall()
 
                 if (len(self.result["data"]) == 1):
-                    print("1 row received")
+                    print("[sQ]...1 row received")
                 else: 
-                    print("{0} rows received".format(len(self.result)))
+                    print("[sQ]...{0} rows received".format(len(self.result["data"])))
 
                 if (get_stats):
                     self.result["stats"] = self.stats
 
         except Exception as e:
-            print("We couldn't get your data...")
+            print("[sQ]...We couldn't get your data.")
             print(e)
             
         finally:
-            # Close connection.
             self.connection.close()
-
-            # Return the data
             return self.result
 
-    def authenticate_connection(self, username=None, password=None):
+    def set_dry_run(self, on=False):
+        if ( (self.connection != None) & on ):
+                print("[sQ]...Doing a dry-run")
+                self.connection._execute_command(3, "SET super_isDryRun=true")
+                self.connection._read_ok_packet()
+        else:
+            print("[sQ]...Running a query")
+            self.connection._execute_command(3, "SET super_isDryRun=false")
+            self.connection._read_ok_packet()    
 
+    def authenticate_connection(self, username=None, password=None):
         try:
             if ( (username != None) & (password != None) ):
                 self.auth["username"] = username
@@ -65,31 +73,23 @@ class SuperQuery(object):
                                 cursorclass=pymysql.cursors.DictCursor)
             
             if (self.connection):
-                print ("Connection to superQuery successful!")
+                print ("[sQ]...Connection to superQuery successful!")
             else:
-                print("Couldn't connect to superQuery!")
+                print("[sQ]...Couldn't connect to superQuery!")
         except Exception as e:
-            print("Authentication problem!")
+            print("[sQ]...Authentication problem!")
             print(e)
 
     @property
     def stats(self):
-
         if (self.result["stats"]):
             return self.result["stats"]
         elif (self.connection.cursor()):
-
             cursor = self.connection.cursor()
-
-            # SQL 
-            sql = "explain;"
             
-            # Execute query.
-            cursor.execute(sql)
-            
-            for row in cursor:
-                self.result["stats"] = json.loads(row["statistics"])
-
+            cursor.execute("explain;")
+            explain = cursor.fetchall()
+            self.result["stats"] = json.loads(explain[0]["statistics"])
             return self.result["stats"]
         else:
             return {}
