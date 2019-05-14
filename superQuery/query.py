@@ -6,7 +6,7 @@ class Result:
     def __init__(self, cur=None, stats=None):
         self.cur = cur
         self.start = 1
-        self.stop = 10
+        self.stop = 1000000000000000
         self._stats = stats
 
     def __iter__(self):
@@ -25,8 +25,9 @@ class Result:
         self.cur = cur
     
     def set_start_stop(self, start, stop):
-        self.start = start if start > 0 else 1
-        self.stop = stop if start > 0 else 10
+        if ( (start != None) & (stop != None) ):
+            self.start = start if start > 0 else self.start
+            self.stop = stop if start > 0 else self.stop
 
     def set_stats(self, stats):
 
@@ -47,7 +48,7 @@ class SuperQuery(object):
     def get_data_by_key(self, key, username=None, password=None):
         print("Up next...")
 
-    def get_data(self, sql, dry_run=False, username=None, password=None, close_connection_afterwards=True, start=1, stop=10):
+    def get_data(self, sql, dry_run=False, username=None, password=None, close_connection_afterwards=True, start=None, stop=None):
         
         try:
             if ( (username != None) & (password != None) | (not self.connection)):
