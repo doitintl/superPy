@@ -25,8 +25,10 @@ else:
     print("Potential Data rows:", mydata.totalRows)
     print("DryRun flag: ", mydata.superParams["isDryRun"])
 
-print ("---------10 ROWS OF DATA---------")
+print ("---------DATA---------")
+i = 1
 for row in mydata:
-    print("Row :", row)
+    print("Row " + str(i) + " :", row)
+    i+=1
 
 del sq
