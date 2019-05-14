@@ -1,4 +1,6 @@
-# superQuery for Python
+
+
+# ![](https://web.superquery.io/wp-content/uploads/2019/03/sq-logotype@1x.svg) for Python
 
 Python package for using superQuery.
 
