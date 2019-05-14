@@ -11,15 +11,16 @@ mydata = sq.get_data(
     username="xxxxxxxxx", 
     password="xxxxxxxxx")
 
+print ("---------RESULTS---------")
 if (not dryrun):
     print("Data rows:", mydata.stats["totalRows"])
-    print("Workflow: ", "DryRun" if (mydata.stats["superParams"]["isDryRun"]) else "Query")
+    print("Workflow:", "Query")
     print("Cost:", mydata.stats["superQueryTotalCost"])
     print("Savings %:", mydata.stats["saving"])
     print("Was cache used?:", mydata.stats["cacheUsed"] if "cacheUsed" in mydata.stats else False)
     print("DryRun flag: ", mydata.stats["superParams"]["isDryRun"])
 else:
-    print("Workflow: ", "DryRun" if (mydata.stats["superParams"]["isDryRun"]) else "Query")
+    print("Workflow:", "DryRun")
     print("Potential BQ bytes scanned: ", mydata.stats["bigQueryTotalBytesProcessed"])
     print("Potential Data rows:", mydata.stats["totalRows"])
     print("DryRun flag: ", mydata.stats["superParams"]["isDryRun"])

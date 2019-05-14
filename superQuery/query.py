@@ -16,11 +16,11 @@ class SuperQuery(object):
     def get_data_by_key(self, key, username=None, password=None):
         print("Up next...")
 
-    def get_data(self, sql, get_stats=False, dry_run=False, username=None, password=None):
+    def get_data(self, sql, get_stats=False, dry_run=False, username=None, password=None, close_connection_afterwards=True):
         
         try:
 
-            if ( (username != None) & (password != None) ):
+            if ( (username != None) & (password != None) | (not self.connection)):
                 self.authenticate_connection(username, password)
 
             self.set_dry_run(dry_run)
@@ -46,8 +46,14 @@ class SuperQuery(object):
             print(e)
             
         finally:
-            self.connection.close()
+            if (close_connection_afterwards):
+                self.close_connection()
             return self.result
+
+    def close_connection(self):
+        if (self.connection):
+            self.connection.close()
+            self.connection = None
 
     def set_dry_run(self, on=False):
         if ( (self.connection != None) & on ):
@@ -65,17 +71,20 @@ class SuperQuery(object):
                 self.auth["username"] = username
                 self.auth["password"] = password
        
-            self.connection = pymysql.connect(host='proxy.superquery.io',
-                                user=self.auth["username"] if self.auth["username"] else username,
-                                password=self.auth["password"] if self.auth["password"] else password,                          
-                                db="",
-                                charset='utf8mb4',
-                                cursorclass=pymysql.cursors.DictCursor)
-            
-            if (self.connection):
-                print ("[sQ]...Connection to superQuery successful!")
+            if (not self.connection):
+                self.connection = pymysql.connect(host='proxy.superquery.io',
+                                    user=self.auth["username"] if self.auth["username"] else username,
+                                    password=self.auth["password"] if self.auth["password"] else password,                          
+                                    db="",
+                                    charset='utf8mb4',
+                                    cursorclass=pymysql.cursors.DictCursor)
+                if (self.connection):
+                    print ("[sQ]...Connection to superQuery successful!")
+                else:
+                    print("[sQ]...Couldn't connect to superQuery!")
             else:
-                print("[sQ]...Couldn't connect to superQuery!")
+                print("[sQ]...Connection to superQuery already established!")
+            
         except Exception as e:
             print("[sQ]...Authentication problem!")
             print(e)
