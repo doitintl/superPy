@@ -2,13 +2,13 @@ from setuptools import setup
 setup(
   name = 'superQuery',         
   packages = ['superQuery'],   
-  version = '0.6',     
+  version = '0.7',     
   license='MIT',       
   description = 'The Python interface to superQuery',  
   author = 'Eben du Toit',                 
   author_email = 'eben@superquery.io',     
   url = 'https://github.com/superquery/superPy',  
-  download_url = 'https://github.com/superquery/superPy/archive/v0.6.tar.gz',    
+  download_url = 'https://github.com/superquery/superPy/archive/v0.7.tar.gz',    
   keywords = ['DATA', 'SUPERQUERY', 'BIGQUERY'],
   install_requires=[            
           'pymysql'
