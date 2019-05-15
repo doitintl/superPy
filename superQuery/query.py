@@ -1,46 +1,60 @@
 import pymysql.cursors 
 import json
 
-class AttributeDict(dict):
-    def __init__(self, *args, **kwargs):
-        super(AttributeDict, self).__init__(*args, **kwargs)
-        self.__dict__ = self
+class Result:
+    
+    def __init__(self, cur=None, stats=None):
+        self.cur = cur
+        self._stats = stats
+
+    def __iter__(self):
+        while True:
+            row = self.cur.fetchone()
+            if row is None:
+                break
+            else:
+                yield row
+
+    def set_cur(self, cur):
+        self.cur = cur
+
+    def set_stats(self, stats):
+        for key, value in stats.items():
+            setattr(self, key, stats[key])
+
+    def set_job_reference(self, jobRef):
+        for key, value in jobRef.items():
+            setattr(self, key, jobRef[key])
+
+    @property
+    def stats(self):
+        return self._stats
 
 class SuperQuery(object):
 
     def __init__(self):
         self.auth = { "username": None, "password": None}
-        self.result = AttributeDict({"data": [], "stats": None})
+        self.result = Result()
         self.connection = None
 
     def get_data_by_key(self, key, username=None, password=None):
         print("Up next...")
 
-    def get_data(self, sql, get_stats=False, dry_run=False, username=None, password=None, close_connection_afterwards=True):
+    def get_data(self, sql, dry_run=False, username=None, password=None, close_connection_afterwards=True):
         
         try:
-
             if ( (username != None) & (password != None) | (not self.connection)):
                 self.authenticate_connection(username, password)
-
+            
             self.set_dry_run(dry_run)
+            self.set_user_agent(agentString="proxyApi")
 
             with self.connection.cursor() as cursor:
-        
-                # Execute query.
-                print("[sQ] Executing> ", sql)
                 cursor.execute(sql)
+                self.stats
+                self.result.set_cur(cursor)
+                return self.result
                 
-                self.result["data"] = cursor.fetchall()
-
-                if (len(self.result["data"]) == 1):
-                    print("[sQ]...1 row received")
-                else: 
-                    print("[sQ]...{0} rows received".format(len(self.result["data"])))
-
-                if (get_stats):
-                    self.result["stats"] = self.stats
-
         except Exception as e:
             print("[sQ]...We couldn't get your data.")
             print(e)
@@ -55,13 +69,16 @@ class SuperQuery(object):
             self.connection.close()
             self.connection = None
 
+    def set_user_agent(self, agentString=None):
+        if ( (self.connection != None) & (agentString != None) ):
+                self.connection._execute_command(3, "SET super_userAgent=python")
+                self.connection._read_ok_packet()
+        
     def set_dry_run(self, on=False):
         if ( (self.connection != None) & on ):
-                print("[sQ]...Doing a dry-run")
                 self.connection._execute_command(3, "SET super_isDryRun=true")
                 self.connection._read_ok_packet()
         else:
-            print("[sQ]...Running a query")
             self.connection._execute_command(3, "SET super_isDryRun=false")
             self.connection._read_ok_packet()    
 
@@ -72,14 +89,15 @@ class SuperQuery(object):
                 self.auth["password"] = password
        
             if (not self.connection):
-                self.connection = pymysql.connect(host='proxy.superquery.io',
+                self.connection = pymysql.connect(
+                                    host='proxy.superquery.io',
                                     user=self.auth["username"] if self.auth["username"] else username,
                                     password=self.auth["password"] if self.auth["password"] else password,                          
                                     db="",
                                     charset='utf8mb4',
                                     cursorclass=pymysql.cursors.DictCursor)
                 if (self.connection):
-                    print ("[sQ]...Connection to superQuery successful!")
+                    print ("[sQ]...Connection to superQuery successful")
                 else:
                     print("[sQ]...Couldn't connect to superQuery!")
             else:
@@ -90,16 +108,16 @@ class SuperQuery(object):
             print(e)
 
     @property
-    def stats(self):
-        if (self.result["stats"]):
-            return self.result["stats"]
+    def stats(self):       
+        if (self.result.stats):
+            return self.result.stats
         elif (self.connection.cursor()):
             cursor = self.connection.cursor()
-            
             cursor.execute("explain;")
             explain = cursor.fetchall()
-            self.result["stats"] = json.loads(explain[0]["statistics"])
-            return self.result["stats"]
+            self.result.set_stats(json.loads(explain[0]["statistics"]))
+            self.result.set_job_reference(json.loads(explain[0]["jobReference"]))
+            return self.result.stats
         else:
             return {}
 
