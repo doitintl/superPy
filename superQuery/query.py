@@ -71,7 +71,7 @@ class SuperQuery(object):
 
     def set_user_agent(self, agentString=None):
         if ( (self.connection != None) & (agentString != None) ):
-                self.connection._execute_command(3, "SET super_userAgent=proxyApi")
+                self.connection._execute_command(3, "SET super_userAgent=python")
                 self.connection._read_ok_packet()
         
     def set_dry_run(self, on=False):
