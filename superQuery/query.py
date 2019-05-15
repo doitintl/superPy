@@ -5,34 +5,26 @@ class Result:
     
     def __init__(self, cur=None, stats=None):
         self.cur = cur
-        self.start = 1
-        self.stop = 1000000000000000
         self._stats = stats
 
     def __iter__(self):
-        row = None
-        for i in range(1, self.stop+1):
-            if (i >= self.start):
-                row = self.cur.fetchone()
-                if row is None:
-                    break
-                else:
-                    yield row
+        while True:
+            row = self.cur.fetchone()
+            if row is None:
+                break
             else:
-                self.cur.fetchone()
+                yield row
 
     def set_cur(self, cur):
         self.cur = cur
-    
-    def set_start_stop(self, start, stop):
-        if ( (start != None) & (stop != None) ):
-            self.start = start if start > 0 else self.start
-            self.stop = stop if start > 0 else self.stop
 
     def set_stats(self, stats):
-
         for key, value in stats.items():
             setattr(self, key, stats[key])
+
+    def set_job_reference(self, jobRef):
+        for key, value in jobRef.items():
+            setattr(self, key, jobRef[key])
 
     @property
     def stats(self):
@@ -48,7 +40,7 @@ class SuperQuery(object):
     def get_data_by_key(self, key, username=None, password=None):
         print("Up next...")
 
-    def get_data(self, sql, dry_run=False, username=None, password=None, close_connection_afterwards=True, start=None, stop=None):
+    def get_data(self, sql, dry_run=False, username=None, password=None, close_connection_afterwards=True):
         
         try:
             if ( (username != None) & (password != None) | (not self.connection)):
@@ -61,7 +53,6 @@ class SuperQuery(object):
                 cursor.execute(sql)
                 self.stats
                 self.result.set_cur(cursor)
-                self.result.set_start_stop(start, stop)
                 return self.result
                 
         except Exception as e:
@@ -125,6 +116,7 @@ class SuperQuery(object):
             cursor.execute("explain;")
             explain = cursor.fetchall()
             self.result.set_stats(json.loads(explain[0]["statistics"]))
+            self.result.set_job_reference(json.loads(explain[0]["jobReference"]))
             return self.result.stats
         else:
             return {}
