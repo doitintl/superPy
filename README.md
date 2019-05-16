@@ -16,16 +16,19 @@ These instructions will get you a copy of the project up and running on your loc
 
 ```
 pip3 install superQuery
+pip3 install jupyter
 ```
 
-## Running `examples/start_here.py`
-
+## Get your authentication details
 * Go to superquery.io and log in/sign up
 * In the left side-bar, scroll down and click on "Integrations"
 * Scroll down until you see "Python" and click "Connect"
 * Note the username and password
-* Inside `start_here.py` exchange `xxxxxxx` with the username/password combination
-* Update the SELECT statement to reflect a query you are interested in. Be careful to start with a low-cost query.
+
+## Running `examples/start_here.py`
+* Inside `start_here.py` exchange `xxxxxxx` with the username/password combination you got from superquery.io
+* Update the SELECT statement to reflect a query you are interested in. Be careful to start with a low-cost query
+
 
 ```
 mydata = sq.get_data(
@@ -39,6 +42,12 @@ mydata = sq.get_data(
 ```
 python3 examples/start_here.py
 ```
+
+## Running `examples/Start here.ipynb`
+* Make sure you have jupyter running (`jupyter notebook` from the console) or use [Colaboratory](https://colab.research.google.com/)
+* Update the credentials in the notebook
+* Run it!
+
 
 ## Tested With
 
