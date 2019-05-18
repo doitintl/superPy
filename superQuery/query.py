@@ -82,7 +82,7 @@ class SuperQuery(object):
             self.connection._execute_command(3, "SET super_isDryRun=false")
             self.connection._read_ok_packet()    
 
-    def authenticate_connection(self, username=None, password=None):
+    def authenticate_connection(self, username=None, password=None, hostname='proxy.superquery.io'):
         try:
             if ( (username != None) & (password != None) ):
                 self.auth["username"] = username
@@ -90,7 +90,7 @@ class SuperQuery(object):
        
             if (not self.connection):
                 self.connection = pymysql.connect(
-                                    host='proxy.superquery.io',
+                                    host=hostname,
                                     user=self.auth["username"] if self.auth["username"] else username,
                                     password=self.auth["password"] if self.auth["password"] else password,                          
                                     db="",
