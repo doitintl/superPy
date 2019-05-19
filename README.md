@@ -45,7 +45,7 @@ python3 examples/start_here.py
 
 ## Running `examples/Start here.ipynb`
 * Make sure you have jupyter running (`jupyter notebook` from the console) or use [Colaboratory](https://colab.research.google.com/)
-* Update the credentials in the notebook
+* Update the credentials in the notebook by following the steps above under "Get your authentication details"
 * Run it!
 
 
