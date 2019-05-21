@@ -27,7 +27,7 @@ pip3 install jupyter
 
 ## Running `examples/start.ipynb`
 * Make sure you have jupyter running (`jupyter notebook` from the console) or use [Colaboratory](https://colab.research.google.com/)
-* Open [start.ipynb](https://github.com/superquery/superPy/blob/master/examples/start.ipynb)
+* Open [start.ipynb](https://colab.research.google.com/github/superquery/superPy/blob/master/examples/start.ipynb)
 * Update the credentials in the notebook by following the steps above under "Get your authentication details"
 * Run it!
 
