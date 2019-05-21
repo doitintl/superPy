@@ -25,8 +25,15 @@ pip3 install jupyter
 * Scroll down until you see "Python" and click "Connect"
 * Note the username and password
 
-## Running `examples/start_here.py`
-* Inside `start_here.py` exchange `xxxxxxx` with the username/password combination you got from superquery.io
+## Running `examples/start.ipynb`
+* Make sure you have jupyter running (`jupyter notebook` from the console) or use [Colaboratory](https://colab.research.google.com/)
+* Open [start.ipynb](https://github.com/superquery/superPy/blob/master/examples/start.ipynb)
+* Update the credentials in the notebook by following the steps above under "Get your authentication details"
+* Run it!
+
+
+## Running `examples/start.py`
+* Inside [`start.py`](https://github.com/superquery/superPy/blob/master/examples/start.py) exchange `xxxxxxx` with the username/password combination you got from superquery.io
 * Update the SELECT statement to reflect a query you are interested in. Be careful to start with a low-cost query
 
 
@@ -43,10 +50,6 @@ mydata = sq.get_data(
 python3 examples/start_here.py
 ```
 
-## Running `examples/Start here.ipynb`
-* Make sure you have jupyter running (`jupyter notebook` from the console) or use [Colaboratory](https://colab.research.google.com/)
-* Update the credentials in the notebook by following the steps above under "Get your authentication details"
-* Run it!
 
 
 ## Tested With
