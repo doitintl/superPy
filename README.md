@@ -26,7 +26,7 @@ pip3 install jupyter
 * Note the username and password
 
 ## Running `examples/start.ipynb`
-* Open [start.ipynb](https://colab.research.google.com/github/superquery/superPy/blob/master/examples/start.ipynb) in Google Colaboratory.
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/superquery/superPy/blob/master/examples/start.ipynb)
 * Update the credentials in the notebook by following the steps above under "Get your authentication details"
 * Run it!
 
