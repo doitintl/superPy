@@ -25,8 +25,14 @@ pip3 install jupyter
 * Scroll down until you see "Python" and click "Connect"
 * Note the username and password
 
-## Running `examples/start.ipynb`
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/superquery/superPy/blob/master/examples/start.ipynb)
+## Running `examples/start.ipynb` in Google Colab
+* [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/superquery/superPy/blob/master/examples/start.ipynb)
+* Update the credentials in the notebook by following the steps above under "Get your authentication details"
+* Run it!
+
+## Running `examples/start.ipynb` in Jupyter notebook
+* Launch Jupyter locally with `jupyter notebook`
+* Download `examples/start.ipynb` to your local machine and open it from Jupyter
 * Update the credentials in the notebook by following the steps above under "Get your authentication details"
 * Run it!
 
