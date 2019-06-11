@@ -2,9 +2,9 @@
 
 # Python API for superQuery
 
-Python package for using superQuery.
+Python API library for superQuery
 
-## Getting Started
+# Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
@@ -19,12 +19,58 @@ pip3 install superQuery
 pip3 install jupyter
 ```
 
-## Get your authentication details
+# Authentication
 * Go to superquery.io and log in/sign up
 * In the left side-bar, scroll down and click on "Integrations"
 * Scroll down until you see "Python" and click "Connect"
 * Note the username and password
 
+# The basic flow
+* Get your autentication details
+* Import the superQuery library: 
+
+``` 
+from superQuery import SuperQuery
+``` 
+* Decide what SQL statement you'd like to run: 
+
+``` 
+sql = """SELECT myfield FROM mytable LIMIT 1000"""
+```
+
+* Create a superQuery instance: 
+``` 
+sq = SuperQuery()
+```
+
+* Get your results generator: 
+```
+mydata = sq.get_data(
+    sql, 
+    dry_run = dryrun,
+    username="xxxxx", 
+    password="xxxxxx")
+```
+
+* Get your results by iteration (**Option A**)
+```
+results = []
+i=0
+for row in mydata:
+  i += 1
+  results.append(row)
+  if i > 1000:
+      break
+```
+
+* Get your results by iteration and store to a Pandas dataframe (**Option B**)
+```
+import pandas as pd
+
+df = pd.DataFrame(data=[x for x in mydata])
+```
+
+# Examples
 ## Running `examples/start.ipynb` in Google Colab
 * [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/superquery/superPy/blob/master/examples/start.ipynb)
 * Update the credentials in the notebook by following the steps above under "Get your authentication details"
@@ -54,8 +100,6 @@ mydata = sq.get_data(
 ```
 python3 examples/start_here.py
 ```
-
-
 
 ## Tested With
 
