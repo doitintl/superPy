@@ -1,7 +1,10 @@
 from superQuery import superQuery
 
 client = superQuery.Client()
-# Select a project, otherwise the default project is selected
+
+#----------------------------------------------------
+# Select a project, otherwise the default is used
+#----------------------------------------------------
 # client.set_project_id("yourproject") 
 
 QUERY = """SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 10"""
@@ -11,8 +14,19 @@ query_job = client.query(QUERY)
 rows = query_job.result()
 
 print ("---------DATA---------")
+#----------------------------------------------------
+# Option A: Get data directly as rows of objects
+#----------------------------------------------------
 for row in rows:
     print(row.name)
+
+#----------------------------------------------------
+# Option B: Get data into a pandas dataframe 
+#----------------------------------------------------
+
+# import pandas as pd
+# df = pd.DataFrame(data=[x.to_dict() for x in rows])
+# print(df.head(10))
 
 print ("---------STATISTICS---------")
 if (not query_job.superParams["isDryRun"]):
