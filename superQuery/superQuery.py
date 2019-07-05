@@ -1,7 +1,7 @@
 import pymysql.cursors 
+import os
 import json
 from copy import deepcopy
-
 
 class Row(object):
     def __init__(self, rowdict):
@@ -46,9 +46,8 @@ class Client(object):
         self.auth = { "username": None, "password": None}
         self.result = Result()
         self.connection = None
-
-    def Client(self, username=None, password=None, hostname='bi.superquery.io'):
-        return self.authenticate_connection(username=username, password=password, hostname=hostname)
+        self.username = os.environ["SUPERQUERY_USERNAME"] if os.environ["SUPERQUERY_USERNAME"] is not None else None
+        self.password = os.environ["SUPERQUERY_PASSWORD"] if os.environ["SUPERQUERY_PASSWORD"] is not None else None
 
     def get_data_by_key(self, key, username=None, password=None):
         print("Up next...")
@@ -56,6 +55,10 @@ class Client(object):
     def query(self, sql, project_id=None, dry_run=False, username=None, password=None, close_connection_afterwards=True):
         
         try:
+            if (username is None or password is None):
+                username = self.username 
+                password = self.password 
+
             if ((username is not None and password is not None) or (not self.connection)):
                 self.authenticate_connection(username, password)
             
