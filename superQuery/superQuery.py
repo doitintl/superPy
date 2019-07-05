@@ -1,20 +1,29 @@
 import pymysql.cursors 
 import json
 
+
+class Row(object):
+    def __init__(self, rowdict):
+        self.__dict__ = rowdict
+
+    def to_dict(self):
+        return self.__dict__
+
 class Result:
     
     def __init__(self, cur=None, stats=None):
         self.cur = cur
         self._stats = stats
 
-    def __iter__(self):
+    def result(self): 
         while True:
             row = self.cur.fetchone()
-            if row is None:
-                break
+            if row is not None:
+                row = Row(row)
+                yield row 
             else:
-                yield row
-
+                break
+        
     def set_cur(self, cur):
         self.cur = cur
 
@@ -25,22 +34,25 @@ class Result:
     def set_job_reference(self, jobRef):
         for key, value in jobRef.items():
             setattr(self, key, jobRef[key])
-
+            
     @property
     def stats(self):
         return self._stats
 
-class SuperQuery(object):
+class Client(object):
 
     def __init__(self):
         self.auth = { "username": None, "password": None}
         self.result = Result()
         self.connection = None
 
+    def Client(self, username=None, password=None, hostname='bi.superquery.io'):
+        return self.authenticate_connection(username=username, password=password, hostname=hostname)
+
     def get_data_by_key(self, key, username=None, password=None):
         print("Up next...")
 
-    def get_data(self, sql, project_id=None, dry_run=False, username=None, password=None, close_connection_afterwards=True):
+    def query(self, sql, project_id=None, dry_run=False, username=None, password=None, close_connection_afterwards=True):
         
         try:
             if ((username is not None and password is not None) or (not self.connection)):
@@ -107,6 +119,7 @@ class SuperQuery(object):
                                     cursorclass=pymysql.cursors.DictCursor)
                 if (self.connection):
                     print ("[sQ]...Connection to superQuery successful")
+                    return self.connection
                 else:
                     print("[sQ]...Couldn't connect to superQuery!")
             else:

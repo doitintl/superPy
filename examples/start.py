@@ -1,36 +1,28 @@
-from superQuery import SuperQuery
+from superQuery import superQuery
 
-# Set to True if you wish to do a dryrun
-dryrun = False 
+client = superQuery.Client()
 
-sq = SuperQuery()
+dryrun = False
 
-# For project_id: If you don't specify a project_id, your default project will be chosen
-mydata = sq.get_data(
-    """SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 50000""", 
-    username="R14SnKpLY2", 
-    password="F4rY_Ovvsj", 
-    project_id=None) 
+QUERY = """SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 50"""
 
-print ("---------STATS---------")
+query_job = client.query(QUERY, username="xxxxxx", password="xxxxxx", project_id=None) 
+
+rows = query_job.result()
+
+for row in rows:
+    print(row.name)
+
+print ("---------STATISTICS---------")
 if (not dryrun):
-    print("Data rows:", mydata.totalRows)
+    print("Data rows:", query_job.totalRows)
     print("Workflow:", "Query")
-    print("Cost:", mydata.superQueryTotalCost)
-    print("Savings %:", mydata.saving)
-    print("Was cache used?:", mydata.cacheUsed if hasattr(mydata, "cacheUsed") else False)
-    print("DryRun flag: ", mydata.superParams["isDryRun"])
+    print("Cost:", query_job.superQueryTotalCost)
+    print("Savings %:", query_job.saving)
+    print("Was cache used?:", query_job.cacheUsed if hasattr(query_job, "cacheUsed") else False)
+    print("DryRun flag: ", query_job.superParams["isDryRun"])
 else:
     print("Workflow:", "DryRun")
-    print("Potential BQ bytes scanned: ", mydata.bigQueryTotalBytesProcessed)
-    print("Potential Data rows:", mydata.totalRows)
-    print("DryRun flag: ", mydata.superParams["isDryRun"])
-
-print ("---------DATA---------")
-i = 1
-for i, row in enumerate(mydata):
-    print("Row " + str(i) + " :", row)
-    if (i > 10):
-        break;
-
-del sq
+    print("Potential BQ bytes scanned: ", query_job.bigQueryTotalBytesProcessed)
+    print("Potential Data rows:", query_job.totalRows)
+    print("DryRun flag: ", query_job.superParams["isDryRun"])

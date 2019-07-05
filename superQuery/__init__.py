@@ -1,1 +1,5 @@
-from superQuery.query import SuperQuery
+from superQuery.superQuery import Client
+
+__all__ = [
+    "Client"
+]
