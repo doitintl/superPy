@@ -8,8 +8,8 @@ sq = SuperQuery()
 # For project_id: If you don't specify a project_id, your default project will be chosen
 mydata = sq.get_data(
     """SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 50000""", 
-    username="xxxxxxxxxx", 
-    password="xxxxxxxxxx", 
+    username="R14SnKpLY2", 
+    password="F4rY_Ovvsj", 
     project_id=None) 
 
 print ("---------STATS---------")
@@ -28,9 +28,8 @@ else:
 
 print ("---------DATA---------")
 i = 1
-for row in mydata:
+for i, row in enumerate(mydata):
     print("Row " + str(i) + " :", row)
-    i+=1
     if (i > 10):
         break;
 
