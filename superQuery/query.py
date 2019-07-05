@@ -40,7 +40,7 @@ class SuperQuery(object):
     def get_data_by_key(self, key, username=None, password=None):
         print("Up next...")
 
-    def get_data(self, sql, dry_run=False, username=None, password=None, close_connection_afterwards=True):
+    def get_data(self, sql, project_id=None, dry_run=False, username=None, password=None, close_connection_afterwards=True):
         
         try:
             if ( (username != None) & (password != None) | (not self.connection)):
@@ -48,6 +48,9 @@ class SuperQuery(object):
             
             self.set_dry_run(dry_run)
             self.set_user_agent(agentString="proxyApi")
+            
+            if (project_id):
+                self.set_project_id(projectId=project_id)
 
             with self.connection.cursor() as cursor:
                 cursor.execute(sql)
@@ -73,6 +76,12 @@ class SuperQuery(object):
         if ( (self.connection != None) & (agentString != None) ):
                 self.connection._execute_command(3, "SET super_userAgent=python")
                 self.connection._read_ok_packet()
+
+    def set_project_id(self, projectId=None):
+        if ( (self.connection != None) & (projectId != None) ):
+            print("[sQ] ...Setting the projectId to ", projectId)
+            self.connection._execute_command(3, "SET super_projectId=" + projectId)
+            self.connection._read_ok_packet()
         
     def set_dry_run(self, on=False):
         if ( (self.connection != None) & on ):
@@ -82,7 +91,7 @@ class SuperQuery(object):
             self.connection._execute_command(3, "SET super_isDryRun=false")
             self.connection._read_ok_packet()    
 
-    def authenticate_connection(self, username=None, password=None, hostname='proxy.superquery.io'):
+    def authenticate_connection(self, username=None, password=None, hostname='bi.superquery.io'):
         try:
             if ( (username != None) & (password != None) ):
                 self.auth["username"] = username
