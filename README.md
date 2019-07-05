@@ -30,45 +30,35 @@ pip3 install jupyter
 * Import the superQuery library: 
 
 ``` 
-from superQuery import SuperQuery
+from superQuery import superQuery
 ``` 
-* Decide what SQL statement you'd like to run: 
 
+* Create a superQuery client: 
 ``` 
-sql = """SELECT myfield FROM mytable LIMIT 1000"""
+client = superQuery.Client()
 ```
 
-* Create a superQuery instance: 
+* Decide what SQL statement you'd like to run: 
 ``` 
-sq = SuperQuery()
+QUERY = """SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 10"""
 ```
 
 * Get your results generator: 
 ```
-mydata = sq.get_data(
-    sql, 
-    dry_run = dryrun,
-    username="xxxxx", 
-    password="xxxxxx",
-    project_id=None) # Set your project_id if you want to.
+query_job = client.query(QUERY)
+rows = query_job.result()
 ```
 
 * Get your results by iteration (**Option A**)
 ```
-results = []
-i=0
-for row in mydata:
-  i += 1
-  results.append(row)
-  if i > 1000:
-      break
+for row in rows:
+    print(row.name)
 ```
 
 * Get your results by iteration and store to a Pandas dataframe (**Option B**)
 ```
 import pandas as pd
-
-df = pd.DataFrame(data=[x for x in mydata])
+df = pd.DataFrame(data=[x.to_dict() for x in rows])
 ```
 
 # Examples
@@ -86,17 +76,26 @@ df = pd.DataFrame(data=[x for x in mydata])
 
 ## Running `examples/start.py`
 * Inside [`start.py`](https://github.com/superquery/superPy/blob/master/examples/start.py) exchange `xxxxxxx` with the username/password combination you got from superquery.io
+* If you don't want to expose the username/password in the code, you can set these two environment variables and leave out the username and password parameters in the `query()` function:
+  - export SUPERQUERY_USERNAME=xxxxxx
+  - export SUPERQUERY_PASSWORD=xxxxxx
 * Update the SELECT statement to reflect a query you are interested in. Be careful to start with a low-cost query
 
 
 ```
-mydata = sq.get_data(
+mydata = client.query(
     "SELECT field FROM `projectId.datasetId.tableID` WHERE _PARTITIONTIME = \"20xx-xx-xx\"", 
     get_stats=True, 
     dry_run=dryrun, 
     username="xxxxxxxxx", 
     password="xxxxxxxxx",
     project_id=None) # If you don't specify a project_id, your default project will be selected
+```
+
+OR 
+
+```
+mydata = client.query("SELECT field FROM `projectId.datasetId.tableID` WHERE _PARTITIONTIME = \"20xx-xx-xx\"")
 ```
 * Now run
 ```
