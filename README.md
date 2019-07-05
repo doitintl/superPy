@@ -49,7 +49,8 @@ mydata = sq.get_data(
     sql, 
     dry_run = dryrun,
     username="xxxxx", 
-    password="xxxxxx")
+    password="xxxxxx",
+    project_id=None) # Set your project_id if you want to.
 ```
 
 * Get your results by iteration (**Option A**)
