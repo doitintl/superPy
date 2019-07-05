@@ -94,7 +94,8 @@ mydata = sq.get_data(
     get_stats=True, 
     dry_run=dryrun, 
     username="xxxxxxxxx", 
-    password="xxxxxxxxx")
+    password="xxxxxxxxx",
+    project_id=None) # If you don't specify a project_id, your default project will be selected
 ```
 * Now run
 ```

@@ -4,12 +4,13 @@ from superQuery import SuperQuery
 dryrun = False 
 
 sq = SuperQuery()
+
+# For project_id: If you don't specify a project_id, your default project will be chosen
 mydata = sq.get_data(
-    "SELECT field1, field2 FROM `projectId.datasetId.tableId` WHERE _PARTITIONTIME = \"2019-05-04\" ORDER BY field1 ASC", 
-    username="xxxxxxxxxx", 
-    password="xxxxxxxxxx", 
-    start=1, 
-    stop=10)
+    """SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 50000""", 
+    username="R14SnKpLY2", 
+    password="F4rY_Ovvsj", 
+    project_id=None) 
 
 print ("---------STATS---------")
 if (not dryrun):
@@ -27,8 +28,9 @@ else:
 
 print ("---------DATA---------")
 i = 1
-for row in mydata:
+for i, row in enumerate(mydata):
     print("Row " + str(i) + " :", row)
-    i+=1
+    if (i > 10):
+        break;
 
 del sq
