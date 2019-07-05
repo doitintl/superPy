@@ -1,5 +1,6 @@
 import pymysql.cursors 
 import json
+from copy import deepcopy
 
 
 class Row(object):
@@ -7,7 +8,7 @@ class Row(object):
         self.__dict__ = rowdict
 
     def to_dict(self):
-        return self.__dict__
+        return deepcopy(self.__dict__)
 
 class Result:
     
