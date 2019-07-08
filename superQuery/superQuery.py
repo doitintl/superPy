@@ -3,6 +3,11 @@ import os
 import json
 from copy import deepcopy
 
+class QueryJobConfig(object):
+
+    def __init__(self):
+        self.destination = None
+        
 class Row(object):
     def __init__(self, rowdict):
         self.__dict__ = rowdict
@@ -45,14 +50,34 @@ class Client(object):
     def __init__(self):
         self.auth = { "username": None, "password": None}
         self.result = Result()
-        self.connection = None
         self.username = os.environ["SUPERQUERY_USERNAME"] if os.environ["SUPERQUERY_USERNAME"] is not None else None
         self.password = os.environ["SUPERQUERY_PASSWORD"] if os.environ["SUPERQUERY_PASSWORD"] is not None else None
+        self._destination_dataset = None 
+        self._destination_project = None 
+        self._destination_table = None
+        self.connection = None
+        self.connection = self.authenticate_connection(self.username, self.password)
+    
+    def dataset(self, dataset):
+        self._destination_dataset = dataset
+        return self
+
+    def table(self, table):
+        self._destination_table = table
+        return self
+
+    def write_disposition(self, disposition):
+        self._write_disposition = disposition
+        return self
+
+    def destination_project(self, project):
+        self._destination_project = project
+        return self
 
     def get_data_by_key(self, key, username=None, password=None):
         print("Up next...")
 
-    def query(self, sql, project_id=None, dry_run=False, username=None, password=None, close_connection_afterwards=True):
+    def query(self, sql, project=None, dry_run=False, username=None, password=None, close_connection_afterwards=True, job_config=None):
         
         try:
             if (username is None or password is None):
@@ -61,13 +86,19 @@ class Client(object):
 
             if ((username is not None and password is not None) or (not self.connection)):
                 self.authenticate_connection(username, password)
+
+            if (job_config):
+                if (job_config.destination):
+                    self.set_destination_dataset(self._destination_dataset) 
+                    self.set_destination_table(self._destination_table)
+                    self.set_write_disposition(self._write_disposition if self._write_disposition else "WRITE_TRUNCATE")
             
             self.set_dry_run(dry_run)
-            self.set_user_agent(agentString="proxyApi")
+            self.set_user_agent(agentString="python")
             
-            if (project_id):
-                self.set_project_id(projectId=project_id)
-
+            if (project):
+                self.set_project(project=project)
+        
             with self.connection.cursor() as cursor:
                 cursor.execute(sql)
                 self.stats
@@ -93,10 +124,30 @@ class Client(object):
             self.connection._execute_command(3, "SET super_userAgent=python")
             self.connection._read_ok_packet()
 
-    def set_project_id(self, projectId=None):
-        if (self.connection is not None and projectId is not None):
-            print("[sQ] ...Setting the projectId to ", projectId)
-            self.connection._execute_command(3, "SET super_projectId=" + projectId)
+    def set_project(self, project=None):
+        if (self.connection is not None and project is not None):
+            print("[sQ] ...Setting the project to ", project)
+            self._project = project 
+            self._destination_project = project
+            self.connection._execute_command(3, "SET super_projectId=" + project)
+            self.connection._read_ok_packet()
+
+    def set_destination_dataset(self, dataset=None):
+        if (self.connection is not None and dataset is not None):
+            print("[sQ] ...Setting the destination dataset to", dataset)
+            self.connection._execute_command(3, "SET super_destinationDataset=" + dataset)
+            self.connection._read_ok_packet()
+
+    def set_destination_table(self, table=None):
+        if (self.connection is not None and table is not None):
+            print("[sQ] ...Setting the destination dataset to", table)
+            self.connection._execute_command(3, "SET super_destinationTable=" + table)
+            self.connection._read_ok_packet()
+
+    def set_write_disposition(self, disposition=None):
+        if (self.connection is not None and disposition is not None):
+            print("[sQ] ...Setting write-disposition to", disposition)
+            self.connection._execute_command(3, "SET super_destinationWriteDisposition=" + disposition)
             self.connection._read_ok_packet()
         
     def set_dry_run(self, on=False):
@@ -122,15 +173,15 @@ class Client(object):
                                     charset='utf8mb4',
                                     cursorclass=pymysql.cursors.DictCursor)
                 if (self.connection):
-                    print ("[sQ]...Connection to superQuery successful")
+                    print ("[sQ] ...Connection to superQuery successful")
                     return self.connection
                 else:
-                    print("[sQ]...Couldn't connect to superQuery!")
+                    print("[sQ] ...Couldn't connect to superQuery!")
             else:
-                print("[sQ]...Connection to superQuery already established!")
+                print("[sQ] ...Connection to superQuery already established!")
             
         except Exception as e:
-            print("[sQ]...Authentication problem!")
+            print("[sQ] ...Authentication problem!")
             print(e)
 
     @property
