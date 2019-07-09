@@ -12,6 +12,9 @@ class Row(object):
     def __init__(self, rowdict):
         self.__dict__ = rowdict
 
+    def __getitem__(self, key):
+        return self.__dict__[key]
+
     def to_dict(self):
         return deepcopy(self.__dict__)
 
