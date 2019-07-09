@@ -58,6 +58,7 @@ class Client(object):
         self._destination_dataset = None 
         self._destination_project = None 
         self._destination_table = None
+        self._write_disposition = None
         self.connection = None
         self.connection = self.authenticate_connection(self.username, self.password)
     
@@ -92,6 +93,7 @@ class Client(object):
 
             if (job_config):
                 if (job_config.destination):
+                    self.set_destination_project(self._destination_project) 
                     self.set_destination_dataset(self._destination_dataset) 
                     self.set_destination_table(self._destination_table)
                     self.set_write_disposition(self._write_disposition if self._write_disposition else "WRITE_TRUNCATE")
@@ -131,8 +133,17 @@ class Client(object):
         if (self.connection is not None and project is not None):
             print("[sQ] ...Setting the project to ", project)
             self._project = project 
-            self._destination_project = project
             self.connection._execute_command(3, "SET super_projectId=" + project)
+            self.connection._read_ok_packet()
+
+    def set_destination_project(self, project=None):
+        if (self.connection is not None and project is not None):
+            print("[sQ] ...Setting the destination project to", project)
+            self.connection._execute_command(3, "SET super_destinationProject=" + project)
+            self.connection._read_ok_packet()
+        elif (self.connection is not None and self._project is not None):
+            print("[sQ] ...Setting the destination project to the current project ", self._project)
+            self.connection._execute_command(3, "SET super_destinationProject=" + self._project)
             self.connection._read_ok_packet()
 
     def set_destination_dataset(self, dataset=None):
@@ -143,7 +154,7 @@ class Client(object):
 
     def set_destination_table(self, table=None):
         if (self.connection is not None and table is not None):
-            print("[sQ] ...Setting the destination dataset to", table)
+            print("[sQ] ...Setting the destination table to", table)
             self.connection._execute_command(3, "SET super_destinationTable=" + table)
             self.connection._read_ok_packet()
 
@@ -161,7 +172,9 @@ class Client(object):
             self.connection._execute_command(3, "SET super_isDryRun=false")
             self.connection._read_ok_packet()    
 
-    def authenticate_connection(self, username=None, password=None, hostname='bi.superquery.io'):
+    def authenticate_connection(self, username=None, password=None, hostname='bi.superquery.io', port=3306):
+        print("Hostname: ", hostname)
+        print("Port: ", port)
         try:
             if (username is not None and password is not None):
                 self.auth["username"] = username
@@ -170,6 +183,7 @@ class Client(object):
             if (not self.connection):
                 self.connection = pymysql.connect(
                                     host=hostname,
+                                    port=port,
                                     user=self.auth["username"] if self.auth["username"] else username,
                                     password=self.auth["password"] if self.auth["password"] else password,                          
                                     db="",

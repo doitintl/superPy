@@ -1,15 +1,30 @@
 from superQuery import superQuery
 
 client = superQuery.Client()
-
 #----------------------------------------------------
 # Select a project, otherwise the default is used
 #----------------------------------------------------
-# client.set_project_id("yourproject") 
+# client.set_project("yourproject")
+
+#----------------------------------------------------
+# Select a destination dataset and table if you want
+#----------------------------------------------------
+# dataset_id = 'DEST_DATASET'
+# job_config = superQuery.QueryJobConfig()
+# table_ref = client.dataset(dataset_id).table('testPythonDestination')
+# job_config.destination = table_ref
 
 QUERY = """SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 10"""
 
+#----------------------------------------------------
+# Run without job configuration
+#----------------------------------------------------
 query_job = client.query(QUERY) 
+
+#----------------------------------------------------
+# Run with job configuration
+#----------------------------------------------------
+# query_job = client.query(sql=QUERY, job_config=job_config) 
 
 rows = query_job.result()
 
@@ -23,10 +38,8 @@ for row in rows:
 #----------------------------------------------------
 # Option B: Get data into a pandas dataframe 
 #----------------------------------------------------
-
 # import pandas as pd
 # df = pd.DataFrame(data=[x.to_dict() for x in rows])
-# print(df.head(10))
 
 print ("---------STATISTICS---------")
 if (not query_job.superParams["isDryRun"]):
