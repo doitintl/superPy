@@ -1,36 +1,57 @@
-from superQuery import SuperQuery
+from superQuery import superQuery
 
-# Set to True if you wish to do a dryrun
-dryrun = False 
+client = superQuery.Client()
+#----------------------------------------------------
+# Select a project, otherwise the default is used
+#----------------------------------------------------
+client.set_project("yourprojectid")
 
-sq = SuperQuery()
+#----------------------------------------------------
+# Select a destination dataset and table if you want
+#----------------------------------------------------
+# dataset_id = 'DEST_DATASET'
+# job_config = superQuery.QueryJobConfig()
+# table_ref = client.dataset(dataset_id).table('testPythonDestination')
+# job_config.destination = table_ref
 
-# For project_id: If you don't specify a project_id, your default project will be chosen
-mydata = sq.get_data(
-    """SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 50000""", 
-    username="R14SnKpLY2", 
-    password="F4rY_Ovvsj", 
-    project_id=None) 
+QUERY = """SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 10"""
 
-print ("---------STATS---------")
-if (not dryrun):
-    print("Data rows:", mydata.totalRows)
-    print("Workflow:", "Query")
-    print("Cost:", mydata.superQueryTotalCost)
-    print("Savings %:", mydata.saving)
-    print("Was cache used?:", mydata.cacheUsed if hasattr(mydata, "cacheUsed") else False)
-    print("DryRun flag: ", mydata.superParams["isDryRun"])
-else:
-    print("Workflow:", "DryRun")
-    print("Potential BQ bytes scanned: ", mydata.bigQueryTotalBytesProcessed)
-    print("Potential Data rows:", mydata.totalRows)
-    print("DryRun flag: ", mydata.superParams["isDryRun"])
+#----------------------------------------------------
+# Run without job configuration
+#----------------------------------------------------
+query_job = client.query(QUERY) 
+
+#----------------------------------------------------
+# Run with job configuration
+#----------------------------------------------------
+# query_job = client.query(sql=QUERY, job_config=job_config) 
+
+rows = query_job.result()
 
 print ("---------DATA---------")
-i = 1
-for i, row in enumerate(mydata):
-    print("Row " + str(i) + " :", row)
-    if (i > 10):
-        break;
+#----------------------------------------------------
+# Option A: Get data directly as rows of objects
+#----------------------------------------------------
+for row in rows:
+    print(row.name)
 
-del sq
+#----------------------------------------------------
+# Option B: Get data into a pandas dataframe 
+#----------------------------------------------------
+# import pandas as pd
+# df = pd.DataFrame(data=[x.to_dict() for x in rows])
+
+print ("---------STATISTICS---------")
+if (not query_job.superParams["isDryRun"]):
+    print("Data rows:", query_job.totalRows)
+    print("Workflow:", "Query")
+    print("Cost: $ %.2f" % round(query_job.superQueryTotalCost, 2))
+    print("Savings %:", query_job.saving)
+    print("Was cache used?:", query_job.cacheUsed if hasattr(query_job, "cacheUsed") else False)
+    print("Cache type:", query_job.cacheType if hasattr(query_job, "cacheUsed") else "None")
+    print("DryRun flag: ", query_job.superParams["isDryRun"])
+else:
+    print("Workflow:", "DryRun")
+    print("Potential BQ bytes scanned: ", query_job.bigQueryTotalBytesProcessed)
+    print("Potential Data rows:", query_job.totalRows)
+    print("DryRun flag: ", query_job.superParams["isDryRun"])

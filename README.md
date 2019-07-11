@@ -15,8 +15,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Installing
 
 ```
-pip3 install superQuery
-pip3 install jupyter
+pip install superQuery
 ```
 
 # Authentication
@@ -30,45 +29,35 @@ pip3 install jupyter
 * Import the superQuery library: 
 
 ``` 
-from superQuery import SuperQuery
+from superQuery import superQuery
 ``` 
-* Decide what SQL statement you'd like to run: 
 
+* Create a superQuery client: 
 ``` 
-sql = """SELECT myfield FROM mytable LIMIT 1000"""
+client = superQuery.Client()
 ```
 
-* Create a superQuery instance: 
+* Decide what SQL statement you'd like to run: 
 ``` 
-sq = SuperQuery()
+QUERY = """SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 10"""
 ```
 
 * Get your results generator: 
 ```
-mydata = sq.get_data(
-    sql, 
-    dry_run = dryrun,
-    username="xxxxx", 
-    password="xxxxxx",
-    project_id=None) # Set your project_id if you want to.
+query_job = client.query(QUERY)
+rows = query_job.result()
 ```
 
 * Get your results by iteration (**Option A**)
 ```
-results = []
-i=0
-for row in mydata:
-  i += 1
-  results.append(row)
-  if i > 1000:
-      break
+for row in rows:
+    print(row.name)
 ```
 
 * Get your results by iteration and store to a Pandas dataframe (**Option B**)
 ```
 import pandas as pd
-
-df = pd.DataFrame(data=[x for x in mydata])
+df = pd.DataFrame(data=[x.to_dict() for x in rows])
 ```
 
 # Examples
@@ -85,19 +74,25 @@ df = pd.DataFrame(data=[x for x in mydata])
 
 
 ## Running `examples/start.py`
-* Inside [`start.py`](https://github.com/superquery/superPy/blob/master/examples/start.py) exchange `xxxxxxx` with the username/password combination you got from superquery.io
-* Update the SELECT statement to reflect a query you are interested in. Be careful to start with a low-cost query
-
+* First, set these two variables in your local environment:
+  - SUPERQUERY_USERNAME=xxxxxx
+  - SUPERQUERY_PASSWORD=xxxxxx
+* Enter your projectId into this line:
 
 ```
-mydata = sq.get_data(
+client.set_project("yourprojectid")
+```
+
+* Alternatively: If you prefer to use your username/password combination directly for each query, then inside  [`start.py`](https://github.com/superquery/superPy/blob/master/examples/start.py) enter your details obtained from the superquery.io web interface where it shows `xxxxxxx` below
+
+```
+query_job = client.query(
     "SELECT field FROM `projectId.datasetId.tableID` WHERE _PARTITIONTIME = \"20xx-xx-xx\"", 
-    get_stats=True, 
-    dry_run=dryrun, 
-    username="xxxxxxxxx", 
+    username="xxxxxxxxx",
     password="xxxxxxxxx",
     project_id=None) # If you don't specify a project_id, your default project will be selected
 ```
+
 * Now run
 ```
 python3 examples/start_here.py
@@ -106,11 +101,10 @@ python3 examples/start_here.py
 ## Tested With
 
 * [Python3.7.3](https://www.python.org/downloads/release/python-373/) - Python version
-* [Twine1.13.0](https://pypi.org/project/twine/) - Package publishing
 
 ## Authors
 
-* **Eben du Toit** - *Initial work* - [ebendutoit](https://github.com/ebendutoit)
+* **Eben du Toit** - *v1.5* - [ebendutoit](https://github.com/ebendutoit)
 
 ## License
 
