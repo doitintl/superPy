@@ -173,8 +173,6 @@ class Client(object):
             self.connection._read_ok_packet()    
 
     def authenticate_connection(self, username=None, password=None, hostname='bi.superquery.io', port=3306):
-        print("Hostname: ", hostname)
-        print("Port: ", port)
         try:
             if (username is not None and password is not None):
                 self.auth["username"] = username
