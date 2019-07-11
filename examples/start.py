@@ -4,7 +4,7 @@ client = superQuery.Client()
 #----------------------------------------------------
 # Select a project, otherwise the default is used
 #----------------------------------------------------
-# client.set_project("yourproject")
+client.set_project("yourprojectid")
 
 #----------------------------------------------------
 # Select a destination dataset and table if you want
