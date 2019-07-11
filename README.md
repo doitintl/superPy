@@ -15,8 +15,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Installing
 
 ```
-pip3 install superQuery
-pip3 install jupyter
+pip install superQuery
 ```
 
 # Authentication
@@ -75,28 +74,25 @@ df = pd.DataFrame(data=[x.to_dict() for x in rows])
 
 
 ## Running `examples/start.py`
-* Inside [`start.py`](https://github.com/superquery/superPy/blob/master/examples/start.py) exchange `xxxxxxx` with the username/password combination you got from superquery.io
-* If you don't want to expose the username/password in the code, you can set these two environment variables and leave out the username and password parameters in the `query()` function:
-  - export SUPERQUERY_USERNAME=xxxxxx
-  - export SUPERQUERY_PASSWORD=xxxxxx
-* Update the SELECT statement to reflect a query you are interested in. Be careful to start with a low-cost query
-
+* First, set these two variables in your local environment:
+  - SUPERQUERY_USERNAME=xxxxxx
+  - SUPERQUERY_PASSWORD=xxxxxx
+* Enter your projectId into this line:
 
 ```
-mydata = client.query(
+client.set_project("yourprojectid")
+```
+
+* Alternatively: If you prefer to use your username/password combination directly for each query, then inside  [`start.py`](https://github.com/superquery/superPy/blob/master/examples/start.py) enter your details obtained from the superquery.io web interface where it shows `xxxxxxx` below
+
+```
+query_job = client.query(
     "SELECT field FROM `projectId.datasetId.tableID` WHERE _PARTITIONTIME = \"20xx-xx-xx\"", 
-    get_stats=True, 
-    dry_run=dryrun, 
-    username="xxxxxxxxx", 
+    username="xxxxxxxxx",
     password="xxxxxxxxx",
     project_id=None) # If you don't specify a project_id, your default project will be selected
 ```
 
-OR 
-
-```
-mydata = client.query("SELECT field FROM `projectId.datasetId.tableID` WHERE _PARTITIONTIME = \"20xx-xx-xx\"")
-```
 * Now run
 ```
 python3 examples/start_here.py
@@ -105,11 +101,10 @@ python3 examples/start_here.py
 ## Tested With
 
 * [Python3.7.3](https://www.python.org/downloads/release/python-373/) - Python version
-* [Twine1.13.0](https://pypi.org/project/twine/) - Package publishing
 
 ## Authors
 
-* **Eben du Toit** - *Initial work* - [ebendutoit](https://github.com/ebendutoit)
+* **Eben du Toit** - *v1.5* - [ebendutoit](https://github.com/ebendutoit)
 
 ## License
 
