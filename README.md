@@ -20,7 +20,7 @@ pip install superQuery
 
 # Authentication
 * Go to superquery.io and log in/sign up
-* In the left side-bar, scroll down and click on "Integrations"
+* In the left side-bar, click on the "Integrations" icon
 * Scroll down until you see "Python" and click "Connect"
 * Note the username and password
 * Set these two environment variables in your local environment:
