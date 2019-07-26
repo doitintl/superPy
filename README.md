@@ -40,6 +40,11 @@ from superQuery import superQuery
 client = superQuery.Client()
 ```
 
+* Set your Google Cloud billing project: 
+```
+client.set_project("yourBillingProjectId")
+```
+
 * Decide what SQL statement you'd like to run: 
 ``` 
 QUERY = """SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 10"""
@@ -80,10 +85,10 @@ df = pd.DataFrame(data=[x.to_dict() for x in rows])
 * First, set these two variables in your local environment:
   - SUPERQUERY_USERNAME=xxxxxx
   - SUPERQUERY_PASSWORD=xxxxxx
-* Enter your projectId into this line:
+* Enter your Google Cloud billing project into this line:
 
 ```
-client.set_project("yourprojectid")
+client.set_project("yourBillingProjectId")
 ```
 
 * Alternatively: If you prefer to use your username/password combination directly for each query, then inside  [`start.py`](https://github.com/superquery/superPy/blob/master/examples/start.py) enter your details obtained from the superquery.io web interface where it shows `xxxxxxx` below
