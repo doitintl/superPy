@@ -97,8 +97,7 @@ client.set_project("yourBillingProjectId")
 query_job = client.query(
     "SELECT field FROM `projectId.datasetId.tableID` WHERE _PARTITIONTIME = \"20xx-xx-xx\"", 
     username="xxxxxxxxx",
-    password="xxxxxxxxx",
-    project_id=None) # If you don't specify a project_id, your default project will be selected
+    password="xxxxxxxxx")
 ```
 
 * Now run
