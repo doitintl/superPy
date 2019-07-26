@@ -28,7 +28,7 @@ pip install superQuery
     - SUPERQUERY_PASSWORD=xxxxxx
 
 # The basic flow
-* Get your autentication details
+* Get your autentication details (See "Authentication" above)
 * Import the superQuery library: 
 
 ``` 
@@ -71,7 +71,7 @@ df = pd.DataFrame(data=[x.to_dict() for x in rows])
 # Examples
 ## Running `examples/start.ipynb` in Google Colab
 * [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/superquery/superPy/blob/master/examples/start.ipynb)
-* Update the credentials in the notebook by following the steps above under "Get your authentication details"
+* Update the credentials in the notebook by following the steps above under "Authentication"
 * Run it!
 
 ## Running `examples/start.ipynb` in Jupyter notebook
