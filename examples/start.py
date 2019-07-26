@@ -2,9 +2,9 @@ from superQuery import superQuery
 
 client = superQuery.Client()
 #----------------------------------------------------
-# Select a project, otherwise the default is used
+# Set your Google Cloud billing project
 #----------------------------------------------------
-client.set_project("yourprojectid")
+client.set_project("yourBillingProjectId")
 
 #----------------------------------------------------
 # Select a destination dataset and table if you want
