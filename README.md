@@ -77,7 +77,7 @@ df = pd.DataFrame(data=[x.to_dict() for x in rows])
 ## Running `examples/start.ipynb` in Jupyter notebook
 * Launch Jupyter locally with `jupyter notebook`
 * Download `examples/start.ipynb` to your local machine and open it from Jupyter
-* Update the credentials in the notebook by following the steps above under "Get your authentication details"
+* Update the credentials in the notebook by following the steps above under "Authentication"
 * Run it!
 
 
