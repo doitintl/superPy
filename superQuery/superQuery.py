@@ -59,7 +59,6 @@ class Client(object):
         self._destination_project = None 
         self._destination_table = None
         self._write_disposition = None
-        self.connection = None
         self.connection = self.authenticate_connection(self.username, self.password)
     
     def dataset(self, dataset):
@@ -88,8 +87,8 @@ class Client(object):
                 username = self.username 
                 password = self.password 
 
-            if ((username is not None and password is not None) or (not self.connection)):
-                self.authenticate_connection(username, password)
+            if ((username is not None and password is not None) and self.connection is None):
+                self.connection = self.authenticate_connection(username, password)
 
             if (job_config):
                 if (job_config.destination):
@@ -106,8 +105,8 @@ class Client(object):
         
             with self.connection.cursor() as cursor:
                 cursor.execute(sql)
-                self.stats
                 self.result.set_cur(cursor)
+                self.stats
                 return self.result
                 
         except Exception as e:
@@ -121,6 +120,7 @@ class Client(object):
 
     def close_connection(self):
         if (self.connection):
+            print("[sQ] ...Closing the connection")
             self.connection.close()
             self.connection = None
 
@@ -178,7 +178,7 @@ class Client(object):
                 self.auth["username"] = username
                 self.auth["password"] = password
        
-            if (not self.connection):
+            if (not hasattr(self, 'connection')):
                 self.connection = pymysql.connect(
                                     host=hostname,
                                     port=port,
@@ -193,7 +193,8 @@ class Client(object):
                 else:
                     print("[sQ] ...Couldn't connect to superQuery!")
             else:
-                print("[sQ] ...Connection to superQuery already established!")
+                print("[sQ] ...Using existing superQuery connection!")
+                return self.connection
             
         except Exception as e:
             print("[sQ] ...Authentication problem!")
@@ -208,7 +209,7 @@ class Client(object):
             cursor.execute("explain;")
             explain = cursor.fetchall()
             self.result.set_stats(json.loads(explain[0]["statistics"]))
-            self.result.set_job_reference(json.loads(explain[0]["jobReference"]))
+            # self.result.set_job_reference(json.loads(explain[0]["jobReference"]))
             return self.result.stats
         else:
             return {}
