@@ -179,6 +179,7 @@ class Client(object):
                 self.auth["password"] = password
        
             if (not hasattr(self, 'connection')):
+            if (not hasattr(self, 'connection') or (hasattr(self, 'connection') and self.connection is None)):
                 self.connection = pymysql.connect(
                                     host=hostname,
                                     port=port,
