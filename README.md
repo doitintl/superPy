@@ -24,8 +24,10 @@ pip install superQuery
 * Scroll down until you see "Python" and click "Connect"
 * Note the username and password
 * Set these two environment variables in your local environment:
-    - `export SUPERQUERY_USERNAME=xxxxxx`
-    - `export SUPERQUERY_PASSWORD=xxxxxx`
+```
+export SUPERQUERY_USERNAME=xxxxxx
+export SUPERQUERY_PASSWORD=xxxxxx
+```
 
 # The basic flow
 * Get your autentication details (See "Authentication" above)
@@ -83,8 +85,10 @@ df = pd.DataFrame(data=[x.to_dict() for x in rows])
 
 ## Running `examples/start.py`
 * First, set these two variables in your local environment:
-  - SUPERQUERY_USERNAME=xxxxxx
-  - SUPERQUERY_PASSWORD=xxxxxx
+```
+export SUPERQUERY_USERNAME=xxxxxx
+export SUPERQUERY_PASSWORD=xxxxxx
+```
 * Enter your Google Cloud billing project into this line:
 
 ```
