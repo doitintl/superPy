@@ -113,7 +113,8 @@ python3 examples/start_here.py
 
 ## Authors
 
-* **Eben du Toit** - *v2.0* - [ebendutoit](https://github.com/ebendutoit)
+* **Eben du Toit** - [ebendutoit](https://github.com/ebendutoit), 
+* **Daniël van Niekerk** - *v2.0* 
 
 ## License
 
