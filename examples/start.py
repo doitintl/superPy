@@ -4,54 +4,42 @@ client = superQuery.Client()
 #----------------------------------------------------
 # Set your Google Cloud billing project
 #----------------------------------------------------
-client.set_project("yourBillingProjectId")
+client.project("yourBillingProjectId")
 
 #----------------------------------------------------
 # Select a destination dataset and table if you want
 #----------------------------------------------------
 # dataset_id = 'DEST_DATASET'
 # job_config = superQuery.QueryJobConfig()
-# table_ref = client.dataset(dataset_id).table('testPythonDestination')
-# job_config.destination = table_ref
+# client = client.dataset(dataset_id).table('testPythonDestination')
 
 QUERY = """SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 10"""
 
-#----------------------------------------------------
-# Run without job configuration
-#----------------------------------------------------
-query_job = client.query(QUERY) 
-
-#----------------------------------------------------
-# Run with job configuration
-#----------------------------------------------------
-# query_job = client.query(sql=QUERY, job_config=job_config) 
-
-rows = query_job.result()
+result = client.query(QUERY) 
 
 print ("---------DATA---------")
 #----------------------------------------------------
 # Option A: Get data directly as rows of objects
 #----------------------------------------------------
-for row in rows:
+for row in result:
     print(row.name)
 
 #----------------------------------------------------
 # Option B: Get data into a pandas dataframe 
 #----------------------------------------------------
-# import pandas as pd
-# df = pd.DataFrame(data=[x.to_dict() for x in rows])
+# df = result.to_df()
 
 print ("---------STATISTICS---------")
-if (not query_job.superParams["isDryRun"]):
-    print("Data rows:", query_job.totalRows)
+if (not result.stats.superParams["isDryRun"]):
+    print("Data rows:", result.stats.totalRows)
     print("Workflow:", "Query")
-    print("Cost: $ %.2f" % round(query_job.superQueryTotalCost, 2))
-    print("Savings %:", query_job.saving)
-    print("Was cache used?:", query_job.cacheUsed if hasattr(query_job, "cacheUsed") else False)
-    print("Cache type:", query_job.cacheType if hasattr(query_job, "cacheUsed") else "None")
-    print("DryRun flag: ", query_job.superParams["isDryRun"])
+    print("Cost: $ %.2f" % round(result.stats.superQueryTotalCost, 2))
+    print("Savings %:", result.stats.saving)
+    print("Was cache used?:", result.stats.cacheUsed if hasattr(result.stats, "cacheUsed") else False)
+    print("Cache type:", result.stats.cacheType if hasattr(result.stats, "cacheUsed") else "None")
+    print("DryRun flag: ", result.stats.superParams["isDryRun"])
 else:
     print("Workflow:", "DryRun")
-    print("Potential BQ bytes scanned: ", query_job.bigQueryTotalBytesProcessed)
-    print("Potential Data rows:", query_job.totalRows)
-    print("DryRun flag: ", query_job.superParams["isDryRun"])
+    print("Potential BQ bytes scanned: ", result.stats.bigQueryTotalBytesProcessed)
+    print("Potential Data rows:", result.stats.totalRows)
+    print("DryRun flag: ", result.stats.superParams["isDryRun"])

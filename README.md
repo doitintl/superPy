@@ -44,7 +44,7 @@ client = superQuery.Client()
 
 * Set your Google Cloud billing project: 
 ```
-client.set_project("yourBillingProjectId")
+client.project("yourBillingProjectId")
 ```
 
 * Decide what SQL statement you'd like to run: 
@@ -54,20 +54,18 @@ QUERY = """SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LI
 
 * Get your results generator: 
 ```
-query_job = client.query(QUERY)
-rows = query_job.result()
+result = client.query(QUERY)
 ```
 
 * Get your results by iteration (**Option A**)
 ```
-for row in rows:
+for row in result:
     print(row.name)
 ```
 
 * Get your results by iteration and store to a Pandas dataframe (**Option B**)
 ```
-import pandas as pd
-df = pd.DataFrame(data=[x.to_dict() for x in rows])
+df = result.to_df()
 ```
 
 # Examples
@@ -92,7 +90,7 @@ export SUPERQUERY_PASSWORD=xxxxxx
 * Enter your Google Cloud billing project into this line:
 
 ```
-client.set_project("yourBillingProjectId")
+client.project("yourBillingProjectId")
 ```
 
 * Alternatively: If you prefer to use your username/password combination directly for each query, then inside  [`start.py`](https://github.com/superquery/superPy/blob/master/examples/start.py) enter your details obtained from the superquery.io web interface where it shows `xxxxxxx` below
@@ -115,7 +113,7 @@ python3 examples/start_here.py
 
 ## Authors
 
-* **Eben du Toit** - *v1.5* - [ebendutoit](https://github.com/ebendutoit)
+* **Eben du Toit** - *v1.7* - [ebendutoit](https://github.com/ebendutoit)
 
 ## License
 
