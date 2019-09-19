@@ -2,6 +2,7 @@ import pymysql.cursors
 import os
 import json
 from copy import deepcopy
+import base64
 
 class QueryJobConfig(object):
 
@@ -23,6 +24,7 @@ class Result:
     def __init__(self, cur=None, stats=None):
         self.cur = cur
         self._stats = stats
+        self.destinationTable = None
 
     def result(self): 
         while True:
@@ -47,6 +49,43 @@ class Result:
     @property
     def stats(self):
         return self._stats
+
+    def set_destination_table(self, table_reference):
+        if self.destinationTable:
+            projectId, datasetId, tableId = table_reference.split('.')
+            self.destinationTable['projectId'] = projectId
+            self.destinationTable['datasetId'] = datasetId
+            self.destinationTable['tableId'] = tableId
+
+    def get_destination_table(self):
+        if self.destinationTable:
+            full_destination_table = '.'.join([self.destinationTable['projectId'],
+                                               self.destinationTable['datasetId'],
+                                               self.destinationTable['tableId']])
+            return full_destination_table
+        else:
+            return None
+
+    def get_key(self):
+        full_destination_table = self.get_destination_table()
+
+        if full_destination_table:
+            return Result._encode_table_reference_key(full_destination_table)
+        else:
+            raise ValueError('Destination table metadata required to create key')
+
+    @staticmethod
+    def _encode_table_reference_key(full_destination_table):
+        full_destination_table_bytes_like = full_destination_table.encode()
+        b64_key = base64.b64encode(full_destination_table_bytes_like)
+        return b64_key.decode()
+
+    @staticmethod
+    def decode_table_reference_key(key):
+        bytes_like_key = key.encode()
+        bytes_like_table_reference = base64.b64decode(bytes_like_key)
+        return bytes_like_table_reference.decode()
+
 
 class Client(object):
 
@@ -78,11 +117,15 @@ class Client(object):
         self._destination_project = project
         return self
 
-    def get_data_by_key(self, key, username=None, password=None):
-        print("Up next...")
+    def get_data_by_key(self, key, **kwargs):
+        decoded_table_reference = Result.decode_table_reference_key(key)
+        sql = 'SELECT * FROM `{}`'.format(decoded_table_reference)
+        keyed_result = self.query(sql=sql, **kwargs)
+        keyed_result.set_destination_table(decoded_table_reference)
+        return keyed_result
 
     def query(self, sql, project=None, dry_run=False, username=None, password=None, close_connection_afterwards=True, job_config=None):
-        
+
         try:
             if (username is None or password is None):
                 username = self.username 
