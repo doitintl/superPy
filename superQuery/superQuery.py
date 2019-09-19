@@ -91,7 +91,7 @@ class Client(object):
         self._destination_table = None
         self._write_disposition = None
 
-        self.result = None
+        self.last_result = None
         self.connection = None
 
 
@@ -166,8 +166,9 @@ class Client(object):
                     explain = cursor2.fetchall()
                     stats = json.loads(explain[0]["statistics"])
                     #job_reference = json.loads(explain[0]["jobReference"])
-                self.result = Result(cursor, stats)
-                return self.result
+                result = Result(cursor, stats)
+                self.last_result = result
+                return result
 
         except Exception as e:
             self._logger.error("An error occurred (perhaps retry)")
@@ -251,8 +252,3 @@ class Client(object):
             self._logger.debug("Authentication problem!")
             self._logger.exception(e)
             raise
-
-    @property
-    def stats(self):
-        if self.result is not None:
-            return self.result.stats
