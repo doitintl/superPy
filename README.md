@@ -96,7 +96,7 @@ client.project("yourBillingProjectId")
 * Alternatively: If you prefer to use your username/password combination directly for each query, then inside  [`start.py`](https://github.com/superquery/superPy/blob/master/examples/start.py) enter your details obtained from the superquery.io web interface where it shows `xxxxxxx` below
 
 ```
-query_job = client.query(
+result = client.query(
     "SELECT field FROM `projectId.datasetId.tableID` WHERE _PARTITIONTIME = \"20xx-xx-xx\"", 
     username="xxxxxxxxx",
     password="xxxxxxxxx")
