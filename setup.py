@@ -12,7 +12,7 @@ setup(
   keywords = ['DATA', 'SUPERQUERY', 'BIGQUERY'],
   install_requires=[            
       'pymysql',
-      'pandas'
+      'pandas', 'IPython'
   ],
   classifiers=[
     'Development Status :: 3 - Alpha',      # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
