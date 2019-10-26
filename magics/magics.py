@@ -156,3 +156,6 @@ def load_ipython_extension(ipython):
     ipython.register_magic_function(
         _cell_magic, magic_kind="cell", magic_name="superquery"
     )
+    # Enable syntax highlighting
+    js = "IPython.CodeCell.options_default.highlight_modes['magic_sql'] = {'reg':[/^%%superquery/]};"
+    display.display_javascript(js, raw=True)
