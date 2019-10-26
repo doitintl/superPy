@@ -24,10 +24,7 @@ __author__ = "mtagda"
     * ``<query>`` (required, cell argument):
         SQL query to run.
     Returns:
-        A :class:`pandas.DataFrame` with the query results.
-    Examples:
-        The following examples can be run in an IPython notebook after loading
-        the superquery IPython extension (see ``In[1]``) and setting up Credentials."""
+        A :class:`pandas.DataFrame` with the query results."""
 
 # import libraries
 from superQuery import superQuery
