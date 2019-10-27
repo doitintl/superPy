@@ -27,9 +27,9 @@ __author__ = "mtagda"
         A :class:`pandas.DataFrame` with the query results."""
 
 # import libraries
-from superQuery import superQuery
+from .superQuery import *
 
-LOGGER = superQuery.setup_logging()
+LOGGER = setup_logging()
 
 try:
     import IPython
@@ -98,7 +98,7 @@ def _cell_magic(line, query):
     """
 
     # Initialize the client
-    client = superQuery.Client()
+    client = Client()
     # Strip input query
     QUERY = query.strip()
 
@@ -146,13 +146,3 @@ def _cell_magic(line, query):
         return
     else:
         return result.to_df()
-
-
-def load_ipython_extension(ipython):
-    """Called by IPython when this module is loaded as an IPython extension."""
-    ipython.register_magic_function(
-        _cell_magic, magic_kind="cell", magic_name="superquery"
-    )
-    # Enable syntax highlighting
-    js = "IPython.CodeCell.options_default.highlight_modes['magic_sql'] = {'reg':[/^%%superquery/]};"
-    display.display_javascript(js, raw=True)
