@@ -2,7 +2,7 @@ from setuptools import setup
 setup(
   name = 'superQuery',         
   packages = ['superQuery'],   
-  version = '2.0',     
+  version = '2.1',     
   license='MIT',       
   description = 'The Python interface to superQuery',  
   author = 'Eben du Toit',                 
@@ -12,7 +12,8 @@ setup(
   keywords = ['DATA', 'SUPERQUERY', 'BIGQUERY'],
   install_requires=[            
       'pymysql',
-      'pandas'
+      'pandas', 
+      'IPython'
   ],
   classifiers=[
     'Development Status :: 3 - Alpha',      # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
