@@ -126,18 +126,18 @@ def _cell_magic(line, query):
     if args.stats:
         print("---------STATISTICS---------")
         if (not result.stats.superParams["isDryRun"]):
-            print("Data rows:", result.stats.totalRows)
-            print("Workflow:", "Query")
-            print("Cost: $ %.2f" % round(result.stats.superQueryTotalCost, 2))
-            print("Savings %:", result.stats.saving)
-            print("Was cache used?:", result.stats.cacheUsed if hasattr(result.stats, "cacheUsed") else False)
-            print("Cache type:", result.stats.cacheType if hasattr(result.stats, "cacheUsed") else "None")
-            print("DryRun flag: ", result.stats.superParams["isDryRun"])
+            print("Total rows: ", result.stats.totalRows)
+            print("Workflow: ", "Query")
+            print("Cost: $ ", result.stats.superQueryTotalCost)
+            print("Savings: % ", result.stats.saving)
+            print("Cache used: ", result.stats.cacheUsed if hasattr(result.stats, "cacheUsed") else False)
+            print("Cache type: ", result.stats.cacheType if hasattr(result.stats, "cacheUsed") else "None")
+            print("DryRun: ", result.stats.superParams["isDryRun"])
         else:
-            print("Workflow:", "DryRun")
-            print("Potential BQ bytes scanned: ", result.stats.bigQueryTotalBytesProcessed)
-            print("Potential Data rows:", result.stats.totalRows)
-            print("DryRun flag: ", result.stats.superParams["isDryRun"])
+            print("Workflow: ", "DryRun")
+            print("Potential BQ bytes to scan: ", result.stats.bigQueryTotalBytesProcessed)
+            print("Total rows: ", result.stats.totalRows)
+            print("DryRun: ", result.stats.superParams["isDryRun"])
 
     if args.dry_run:
         return
