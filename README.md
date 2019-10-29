@@ -68,6 +68,37 @@ for row in result:
 df = result.to_df()
 ```
 
+# Running queries with minimum code using Jupyter notebook
+* Get your autentication details (See "Authentication" above)
+* Import the superQuery library: 
+
+``` 
+from superQuery import superQuery
+``` 
+
+* Create a superQuery client: 
+``` 
+client = superQuery.Client()
+```
+
+* Set your Google Cloud billing project: 
+```
+client.project("yourBillingProjectId")
+```
+
+* Run your SQL query and display the resulting Pandas dataframe (**Option A**)
+``` 
+%%superquery --project yourBillingProjectId
+SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 10
+```
+
+* Run your SQL query and save the resulting Pandas dataframe to a new variable `df`, which is given as an argument to the `%%superquery` cell magic (**Option B**)
+``` 
+%%superquery df --project yourBillingProjectId
+SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 10
+```
+
+
 # Examples
 ## Running `examples/start.ipynb` in Google Colab
 * [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/superquery/superPy/blob/master/examples/start.ipynb)
@@ -106,6 +137,11 @@ query_job = client.query(
 ```
 python3 examples/start_here.py
 ```
+## Running `magic_example.ipynb` in Jupyter notebook
+* Launch Jupyter locally with `jupyter notebook`
+* Download `magic_example.ipynb` to your local machine and open it from Jupyter
+* Update the credentials in the notebook by following the steps above under "Authentication"
+* Run it!
 
 ## Tested With
 
@@ -115,6 +151,7 @@ python3 examples/start_here.py
 
 * **Eben du Toit** - [ebendutoit](https://github.com/ebendutoit), 
 * **Daniël van Niekerk** - *v2.0* 
+* **Magdalena Trzeciak** - [mtagda](https://github.com/mtagda) - *v2.1*, 
 
 ## License
 
