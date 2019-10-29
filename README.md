@@ -76,14 +76,9 @@ df = result.to_df()
 from superQuery import superQuery
 ``` 
 
-* Create a superQuery client: 
+* Load the `%%superquery` magic  
 ``` 
-client = superQuery.Client()
-```
-
-* Set your Google Cloud billing project: 
-```
-client.project("yourBillingProjectId")
+%load_ext superQuery
 ```
 
 * Run your SQL query and display the resulting Pandas dataframe (**Option A**)
