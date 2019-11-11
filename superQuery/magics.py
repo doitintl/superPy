@@ -46,11 +46,6 @@ except ImportError:
     help=("If provided, save the output to this variable instead of displaying it."),
 )
 @magic_arguments.argument(
-    "stats_var",
-    nargs="?",
-    help=("If provided, save the output to this variable instead of displaying it."),
-)
-@magic_arguments.argument(
     "--project",
     type=str,
     default=None,
@@ -82,7 +77,14 @@ except ImportError:
             "Select a destination table (optional)"
     ),
 )
-
+@magic_arguments.argument(
+    "--stats",
+    type=bool,
+    default=False,
+    help=(
+            "Set True if you want to see stats"
+    ),
+)
 def _cell_magic(line, query):
     """Underlying function for superquery cell magic
     Note:
@@ -120,15 +122,27 @@ def _cell_magic(line, query):
         LOGGER.exception(ex)
         return
 
+    # Print stats if needed
+    if args.stats:
+        print("---------STATISTICS---------")
+        if (not result.stats.superParams["isDryRun"]):
+            print("Total rows: ", result.stats.totalRows)
+            print("Workflow: ", "Query")
+            print("Cost: $ ", result.stats.superQueryTotalCost)
+            print("Savings: % ", result.stats.saving)
+            print("Cache used: ", result.stats.cacheUsed if hasattr(result.stats, "cacheUsed") else False)
+            print("Cache type: ", result.stats.cacheType if hasattr(result.stats, "cacheUsed") else "None")
+            print("DryRun: ", result.stats.superParams["isDryRun"])
+        else:
+            print("Workflow: ", "DryRun")
+            print("Potential BQ bytes to scan: ", result.stats.bigQueryTotalBytesProcessed)
+            print("Total rows: ", result.stats.totalRows)
+            print("DryRun: ", result.stats.superParams["isDryRun"])
+
     if args.dry_run:
         return
     elif args.destination_var:
         IPython.get_ipython().push({args.destination_var: result.to_df()})
-        # Stats
-        if args.stats_var:
-            df_stats = pd.DataFrame.from_dict(result.stats.to_dict(), orient='index').reset_index()
-            df_stats.columns = ["statistic", "value"]
-            IPython.get_ipython().push({args.stats_var: df_stats})
         return
     else:
         return result.to_df()
