@@ -125,9 +125,10 @@ def _cell_magic(line, query):
     elif args.destination_var:
         IPython.get_ipython().push({args.destination_var: result.to_df()})
         # Stats
-        df_stats = pd.DataFrame.from_dict(result.stats.to_dict(), orient='index').reset_index()
-        df_stats.columns = ["statistic", "value"]
-        IPython.get_ipython().push({args.stats_var: df_stats})
+        if args.stats_var:
+            df_stats = pd.DataFrame.from_dict(result.stats.to_dict(), orient='index').reset_index()
+            df_stats.columns = ["statistic", "value"]
+            IPython.get_ipython().push({args.stats_var: df_stats})
         return
     else:
         return result.to_df()
