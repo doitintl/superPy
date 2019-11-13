@@ -87,8 +87,8 @@ class Client(object):
     def __init__(self, usernameDriveAuth=None):
         self._logger = logging.getLogger("sQ")
         self._usernameDriveAuth = usernameDriveAuth
-        self._username = usernameDriveAuth if usernameDriveAuth else os.getenv("SUPERQUERY_USERNAME")
-        self._password = None if usernameDriveAuth else os.getenv("SUPERQUERY_PASSWORD")
+        self._username = os.getenv("SUPERQUERY_USERNAME")
+        self._password = os.getenv("SUPERQUERY_PASSWORD") 
         self._user_agent = "python"
         self._project = None
         self._destination_dataset = None
