@@ -12,6 +12,8 @@ __author__ = "mtagda"
     * ``<destination_var>`` (optional, line argument):
         variable to store the query results. The results are not displayed if
         this parameter is used.
+    * ``<stats_var>`` (optional, line argument):
+        variable to store the query statistics.
     * ``--project <project>`` (optional, line argument):
         Project to use for running the query.
     * ``--dry_run`` (optional, line argument):
@@ -21,6 +23,8 @@ __author__ = "mtagda"
         Destination dataset.
     * ``--table <table>`` (optional, line argument):
         Destination table.
+    * ``--username <username>`` (optional, line argument):
+        Username to use with Google Drive-based authentication
     * ``<query>`` (required, cell argument):
         SQL query to run.
     Returns:
@@ -82,6 +86,14 @@ except ImportError:
             "Select a destination table (optional)"
     ),
 )
+@magic_arguments.argument(
+    "--username",
+    type=str,
+    default=None,
+    help=(
+            "Provide the username for Google Drive-based auth"
+    ),
+)
 
 def _cell_magic(line, query):
     """Underlying function for superquery cell magic
@@ -95,13 +107,17 @@ def _cell_magic(line, query):
         pandas.DataFrame: the query results.
     """
 
-    # Initialize the client
-    client = Client()
-    # Strip input query
-    QUERY = query.strip()
-
     # Parse arguments
     args = magic_arguments.parse_argstring(_cell_magic, line)
+
+    if args.username:
+        # Initialize the client
+        client = Client(usernameDriveAuth=args.username)
+    else:
+        client = Client()
+    
+    # Strip input query
+    QUERY = query.strip()
 
     if args.project:
         client.project(args.project)
@@ -114,6 +130,7 @@ def _cell_magic(line, query):
 
     # Get query result
     try:
+        print("[sQ] Executing query...")
         result = client.query(QUERY, dry_run=args.dry_run)
     except Exception as ex:
         LOGGER.error("An error occurred")
