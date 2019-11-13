@@ -101,6 +101,7 @@ class Client(object):
     
     def get_colab_auth_from_drive(self, usernameDriveAuth):
         user_auth = None
+        print("[sQ] Trying to get auth file from Drive!")
         try:
             from google.colab import auth
             auth.authenticate_user()
