@@ -101,7 +101,7 @@ class Client(object):
     
     def get_colab_auth_from_drive(self, usernameDriveAuth):
         user_auth = None
-        print("[sQ] Trying to get auth file from Drive!")
+        self._logger.debug("Trying to get auth file from Google Drive")
         try:
             from google.colab import auth
             auth.authenticate_user()
@@ -116,10 +116,20 @@ class Client(object):
                 if f['title'] == "auth.json":
                     fname = f['title']
                     f_ = drive.CreateFile({'id': f['id']})
-                    print("[sQ] Got auth file!")
+
+                    self._logger.debug("Got auth file!")
                     user_auth = f_.GetContentString(fname)
                     self._username = usernameDriveAuth
                     self._password = json.loads(user_auth)['password']
+
+                    self._logger.debug("Saving auth to environment")
+                    os.environ['SUPERQUERY_USERNAME'] = self._username
+                    os.environ['SUPERQUERY_PASSWORD'] = self._password
+
+                    self._logger.debug("Removing auth file!")
+                    f_.Trash()  # Move file to trash.
+                    f_.UnTrash()  # Move file out of trash.
+                    f_.Delete()  # Permanently delete the file.
                     break;
 
         except Exception as e:
