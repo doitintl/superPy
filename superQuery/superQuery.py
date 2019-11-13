@@ -126,10 +126,10 @@ class Client(object):
                     os.environ['SUPERQUERY_USERNAME'] = self._username
                     os.environ['SUPERQUERY_PASSWORD'] = self._password
 
-                    self._logger.debug("Removing auth file!")
-                    f_.Trash()  # Move file to trash.
-                    f_.UnTrash()  # Move file out of trash.
-                    f_.Delete()  # Permanently delete the file.
+                    # self._logger.debug("Removing auth file!")
+                    # f_.Trash()  # Move file to trash.
+                    # f_.UnTrash()  # Move file out of trash.
+                    # f_.Delete()  # Permanently delete the file.
                     break;
 
         except Exception as e:
