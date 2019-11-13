@@ -6,6 +6,10 @@ import logging
 import pymysql.cursors
 import pandas as pd
 
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+from oauth2client.client import GoogleCredentials
+
 
 LOG_DIR = os.getenv("SUPERQUERY_LOGDIR")
 LOG_LEVEL = os.getenv("SUPERQUERY_LOGLEVEL") or logging.INFO
@@ -16,6 +20,7 @@ def setup_logging():
     logger = logging.getLogger("sQ")
     formatter = logging.Formatter(fmt)
     logger.setLevel(loglevel)
+    logname = "superPy"
     if LOG_DIR is not None:
         logfname = os.path.join(LOG_DIR, logname + ".log")
         ofstream = logging.handlers.TimedRotatingFileHandler(logfname, when="D", interval=1, encoding="utf-8")
@@ -79,11 +84,11 @@ class Result:
 
 class Client(object):
 
-    def __init__(self):
+    def __init__(self, usernameDriveAuth=None):
         self._logger = logging.getLogger("sQ")
-
-        self._username = os.getenv("SUPERQUERY_USERNAME")
-        self._password = os.getenv("SUPERQUERY_PASSWORD")
+        self._usernameDriveAuth = usernameDriveAuth
+        self._username = usernameDriveAuth if usernameDriveAuth else os.getenv("SUPERQUERY_USERNAME")
+        self._password = None if usernameDriveAuth else os.getenv("SUPERQUERY_PASSWORD")
         self._user_agent = "python"
         self._project = None
         self._destination_dataset = None
@@ -93,7 +98,32 @@ class Client(object):
 
         self.result = None
         self.connection = None
+    
+    def get_colab_auth_from_drive(self, usernameDriveAuth):
+        user_auth = None
+        try:
+            from google.colab import auth
+            auth.authenticate_user()
+            gauth = GoogleAuth()
+            gauth.credentials = GoogleCredentials.get_application_default()
+            drive = GoogleDrive(gauth)
 
+            file_list = drive.ListFile().GetList()
+            user_auth = None
+
+            for f in file_list:
+                if f['title'] == "auth.json":
+                    fname = f['title']
+                    f_ = drive.CreateFile({'id': f['id']})
+                    print("[sQ] Got auth file!")
+                    user_auth = f_.GetContentString(fname)
+                    self._username = usernameDriveAuth
+                    self._password = json.loads(user_auth)['password']
+                    break;
+
+        except Exception as e:
+            print("[sQ] Error in Drive flow...")
+            self._logger.exception(e)
 
     def project(self, project):
         self._project = project
@@ -131,6 +161,9 @@ class Client(object):
         if job_config is not None:
             raise NotImplementedError("The job_config parameter is not yet handled")
 
+        if (self._username is None or self._password is None) and self._usernameDriveAuth:
+            self.get_colab_auth_from_drive(self._usernameDriveAuth)
+        
         username = username or self._username
         password = password or self._password
         if username is None or password is None:
