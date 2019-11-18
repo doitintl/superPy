@@ -211,6 +211,8 @@ class Client(object):
                     stats = json.loads(explain[0]["statistics"])
                     #job_reference = json.loads(explain[0]["jobReference"])
                 self.result = Result(cursor, stats)
+                savings = (float(stats['bigQueryTotalBytesProcessed']) - float(stats['superQueryTotalBytesProcessed'])) / float(stats['bigQueryTotalBytesProcessed']) * 100
+                print("[sQ] Cost: ${0}, superQuery saved you: {1}%, Speedup: {2}X".format(round(stats['superQueryTotalBytesProcessed']/1024**4 * 5,4), str( round(savings , 2)), round(1/(1-((savings if savings < 100 else savings-1)/100)),2)))
                 return self.result
 
         except Exception as e:
