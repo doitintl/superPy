@@ -120,7 +120,7 @@ class Client(object):
                     self._logger.debug("Got auth file!")
                     user_auth = f_.GetContentString(fname)
                     self._username = usernameDriveAuth
-                    self._password = json.loads(user_auth)['password']
+                    self._password = json.loads(user_auth)['value']
 
                     self._logger.debug("Saving auth to environment")
                     os.environ['SUPERQUERY_USERNAME'] = self._username
