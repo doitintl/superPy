@@ -94,6 +94,14 @@ except ImportError:
             "Provide the username for Google Drive-based auth"
     ),
 )
+@magic_arguments.argument(
+    "--params",
+    nargs="+",
+    default=None,
+    help=(
+            "Object containing paramters as key/value pairs"
+    ),
+)
 
 def _cell_magic(line, query):
     """Underlying function for superquery cell magic
