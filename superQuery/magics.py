@@ -127,6 +127,20 @@ def _cell_magic(line, query):
     # Strip input query
     QUERY = query.strip()
 
+    # Build the parameters object
+    if args.params:
+
+        params = {}
+        # Build a dictionary from a sequence of parameters
+        for idx, item in enumerate(args.params):
+            if not (idx % 2):
+                params[item] = args.params[idx+1]          
+        
+        # Exchange parameters in QUERY with the incoming parameters
+        # Only handle String types now
+        for attr, value in params.items():
+            QUERY = QUERY.replace("@"+attr, "\"{0}\"".format(value))
+
     if args.project:
         client.project(args.project)
 
