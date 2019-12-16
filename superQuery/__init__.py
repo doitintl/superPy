@@ -1,7 +1,9 @@
 from .superQuery import Client
+from .superQuery import Configuration
 
 __all__ = [
-    "Client"
+    "Client",
+    "Configuration"
 ]
 
 

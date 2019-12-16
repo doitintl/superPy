@@ -35,6 +35,20 @@ def setup_logging():
 LOGGER = setup_logging()
 
 
+class Configuration(object):
+
+    def __init__(self):
+        self.config = None
+        self.configString = ""
+
+    def configure_parameters(self, config):
+        
+        for item in config:
+            self.configString += item + " "
+            self.configString += config[item] + " "
+
+        return self.configString
+
 class QueryJobConfig(object):
 
     def __init__(self):
