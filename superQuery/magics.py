@@ -45,13 +45,13 @@ except ImportError:
 
 @magic_arguments.magic_arguments()
 @magic_arguments.argument(
-    "destination_var",
-    nargs="?",
+    "--dest",
+    type=str,
     help=("If provided, save the output to this variable instead of displaying it."),
 )
 @magic_arguments.argument(
-    "stats_var",
-    nargs="?",
+    "--stats",
+    type=str,
     help=("If provided, save the output to this variable instead of displaying it."),
 )
 @magic_arguments.argument(
@@ -161,13 +161,13 @@ def _cell_magic(line, query):
 
     if args.dry_run:
         return
-    elif args.destination_var:
-        IPython.get_ipython().push({args.destination_var: result.to_df()})
+    elif args.dest:
+        IPython.get_ipython().push({args.dest: result.to_df()})
         # Stats
-        if args.stats_var:
+        if args.stats:
             df_stats = pd.DataFrame.from_dict(result.stats.to_dict(), orient='index').reset_index()
             df_stats.columns = ["statistic", "value"]
-            IPython.get_ipython().push({args.stats_var: df_stats})
+            IPython.get_ipython().push({args.stats: df_stats})
         return
     else:
         return result.to_df()

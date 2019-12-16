@@ -89,8 +89,21 @@ SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 10
 
 * Run your SQL query and save the resulting Pandas dataframe to a new variable `df`, which is given as an argument to the `%%superquery` cell magic (**Option B**)
 ``` 
-%%superquery df --project yourBillingProjectId
+%%superquery --project yourBillingProjectId --dest df
 SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 10
+```
+
+* Run your SQL query and save the resulting Pandas dataframe to a new variable `df` and query execution statistics to `df_stats`. Also provide query input parameters with `$params` (**Option C**)
+``` 
+params = superQuery.Configuration().configure_parameters({
+    'fromYear': '2000', 
+    'toYear': '2019'
+})
+```
+
+```
+%%superquery --project yourBillingProjectId --params $params --dest df --stats df_stats
+SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` WHERE year >= CAST(@fromYear AS INT64) LIMIT 10
 ```
 
 
@@ -104,7 +117,7 @@ SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 10
 * Launch Jupyter locally with `jupyter notebook`
 * Download `examples/start.ipynb` to your local machine and open it from Jupyter
 * Update the credentials in the notebook by following the steps above under "Authentication"
-* Run it!
+* Run it
 
 
 ## Running `examples/start.py`
