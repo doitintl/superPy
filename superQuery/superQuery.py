@@ -181,7 +181,8 @@ class Client(object):
               username=None,
               password=None,
               close_connection_afterwards=True,
-              job_config=None):
+              job_config=None,
+              hostname="bi.superquery.io"):
         
         if job_config is not None:
             raise NotImplementedError("The job_config parameter is not yet handled")
@@ -198,7 +199,7 @@ class Client(object):
             #Reuse or establish connection:
             if self.connection is None:
                 self._logger.debug("Establishing a new connection")
-                self.connection = self.authenticate_connection(username, password)
+                self.connection = self.authenticate_connection(username, password, hostname=hostname)
                 if self.connection is None:
                     raise Exception("Unable to establish a connection")
                 else:
