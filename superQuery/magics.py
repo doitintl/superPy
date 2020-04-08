@@ -102,6 +102,14 @@ except ImportError:
             "Object containing paramters as key/value pairs"
     ),
 )
+@magic_arguments.argument(
+    "--hostname",
+    type=str,
+    default=None,
+    help=(
+            "Provide the hostname"
+    ),
+)
 
 def _cell_magic(line, query):
     """Underlying function for superquery cell magic
@@ -153,7 +161,10 @@ def _cell_magic(line, query):
     # Get query result
     try:
         print("[sQ] Executing query...")
-        result = client.query(QUERY, dry_run=args.dry_run)
+        if args.hostname:
+            result = client.query(QUERY, dry_run=args.dry_run, hostname=args.hostname)
+        else:
+            result = client.query(QUERY, dry_run=args.dry_run)
     except Exception as ex:
         LOGGER.error("An error occurred")
         LOGGER.exception(ex)
