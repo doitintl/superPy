@@ -224,6 +224,7 @@ class Client(object):
                     cursor2.execute("explain;")
                     explain = cursor2.fetchall()
                     stats = json.loads(explain[0]["statistics"])
+                    stats = self.clean_stats(stats)
                     #job_reference = json.loads(explain[0]["jobReference"])
                 self.result = Result(cursor, stats)
                 if float(stats['bigQueryTotalBytesProcessed']) > 0:
@@ -241,6 +242,13 @@ class Client(object):
         finally:
             if close_connection_afterwards:
                 self.close_connection()
+
+    def clean_stats(self, stats):
+
+        if (type(stats['superQueryTotalBytesProcessed']).__name__ == 'str'):
+            stats['superQueryTotalBytesProcessed'] = 0
+
+        return stats
 
     def close_connection(self):
         if (self.connection):
