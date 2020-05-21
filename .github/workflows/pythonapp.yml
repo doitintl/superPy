@@ -38,3 +38,4 @@ jobs:
         pip install pytest
         pip install pytest-cov
         py.test tests
+      if: ${{ always() }}
