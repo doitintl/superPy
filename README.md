@@ -1,4 +1,4 @@
-![Python application](https://github.com/doitintl/superPy/workflows/Python%20application/badge.svg)
+![Python application](https://github.com/doitintl/superPy/workflows/Python%20application/badge.svg?branch=hotfix%2Feben%2FtestActions)
 
 # Python API for superQuery
 
