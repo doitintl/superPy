@@ -2,6 +2,8 @@
 from superQuery import *
 import unittest
 
+# Unit tests for superPy
+
 class SuperTests(unittest.TestCase):
     def test_clean_stats(self):
 
