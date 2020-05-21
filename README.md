@@ -1,5 +1,3 @@
-![](https://web.superquery.io/wp-content/uploads/2019/03/sq-logotype@1x.svg)
-
 # Python API for superQuery
 
 Python API library for superQuery
