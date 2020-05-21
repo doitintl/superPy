@@ -1,3 +1,5 @@
+![Python application](https://github.com/doitintl/superPy/workflows/Python%20application/badge.svg)
+
 # Python API for superQuery
 
 Python API library for superQuery
