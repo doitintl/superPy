@@ -4,7 +4,7 @@ import unittest
 
 class SuperTests(unittest.TestCase):
     def test_clean_stats(self):
-
+        '''Tests the clean_stats function'''
         sq_client = Client()
 
         # If we get a string
