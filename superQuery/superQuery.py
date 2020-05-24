@@ -6,9 +6,14 @@ import logging
 import pymysql.cursors
 import pandas as pd
 
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
-from oauth2client.client import GoogleCredentials
+# The pydrive and oauth2 context belongs to the superQuery 
+# export to Jupyter flow
+try:
+    from pydrive.auth import GoogleAuth
+    from pydrive.drive import GoogleDrive
+    from oauth2client.client import GoogleCredentials
+except ImportError:
+    print("[sQ] pyDrive or oauth2 clietn import error.")
 
 
 LOG_DIR = os.getenv("SUPERQUERY_LOGDIR")
