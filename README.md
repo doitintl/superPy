@@ -109,7 +109,7 @@ SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` WHERE year >=
 
 # Examples
 ## Running `examples/start.ipynb` in Google Colab
-* [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/superquery/superPy/blob/master/examples/start.ipynb)
+* [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/doitintl/superPy/blob/master/examples/start.ipynb)
 * Update the credentials in the notebook by following the steps above under "Authentication"
 * Run it!
 
@@ -132,7 +132,7 @@ export SUPERQUERY_PASSWORD=xxxxxx
 client.project("yourBillingProjectId")
 ```
 
-* Alternatively: If you prefer to use your username/password combination directly for each query, then inside  [`start.py`](https://github.com/superquery/superPy/blob/master/examples/start.py) enter your details obtained from the superquery.io web interface where it shows `xxxxxxx` below
+* Alternatively: If you prefer to use your username/password combination directly for each query, then inside  [`start.py`](https://github.com/doitintl/superPy/blob/master/examples/start.py) enter your details obtained from the superquery.io web interface where it shows `xxxxxxx` below
 
 ```
 query_job = client.query(
