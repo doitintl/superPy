@@ -25,3 +25,8 @@ class SuperTests(unittest.TestCase):
         stats = { 'superQueryTotalBytesProcessed': 0 }
         stats = sq_client.clean_stats(stats)
         self.assertEqual(stats['superQueryTotalBytesProcessed'], 0)
+
+    def test_print_log_query_stats(self):
+        sq_client = Client()
+        sq_client.set_log_query_results(False)
+        self.assertEqual(sq_client.get_log_query_results(), False)

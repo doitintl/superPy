@@ -114,9 +114,11 @@ class Client(object):
         self._destination_project = None
         self._destination_table = None
         self._write_disposition = None
-
+        self._log_query_results = True
         self.result = None
         self.connection = None
+
+        self._BQ_DML_list = ["INSERT", "UPDATE", "DELETE"]
     
     def get_colab_auth_from_drive(self, usernameDriveAuth):
         user_auth = None
@@ -178,6 +180,13 @@ class Client(object):
     def get_data_by_key(self, key, username=None, password=None):
         raise NotImplementedError("Up next...")
 
+    def set_log_query_results(self, log_query):
+        self._log_query_results = log_query
+        return self
+    
+    def get_log_query_results(self):
+        return self._log_query_results
+
     def query(self,
               sql,
               project=None,
@@ -216,7 +225,12 @@ class Client(object):
             self._set_destination_project()
             self._set_destination_dataset()
             self._set_destination_table()
-            self._set_write_disposition()
+
+            #BQ does not allow to set write disposition to DML with error: Cannot set write disposition in jobs with DML statements
+            #https://cloud.google.com/bigquery/docs/reference/standard-sql/data-manipulation-language      
+            if not any(DML_word in sql.upper() for DML_word in self._BQ_DML_list):
+                self._set_write_disposition()
+
             self._set_dry_run(dry_run)
             self._set_caching(use_cache)
             self._set_user_agent()
@@ -236,7 +250,8 @@ class Client(object):
                     savings = (float(stats['bigQueryTotalBytesProcessed']) - float(stats['superQueryTotalBytesProcessed'])) / float(stats['bigQueryTotalBytesProcessed']) * 100
                 else:
                     savings = 0
-                print("[sQ] Cost: ${0}, superQuery saved you: {1}%, Speedup: {2}X".format(round(stats['superQueryTotalBytesProcessed']/1024**4 * 5,4), str( round(savings , 2)), round(1/(1-((savings if savings < 100 else savings-1)/100)),2)))
+                if self._log_query_results:
+                    print("[sQ] Cost: ${0}, superQuery saved you: {1}%, Speedup: {2}X".format(round(stats['superQueryTotalBytesProcessed']/1024**4 * 5,4), str( round(savings , 2)), round(1/(1-((savings if savings < 100 else savings-1)/100)),2)))
                 return self.result
 
         except Exception as e:

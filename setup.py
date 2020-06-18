@@ -2,7 +2,7 @@ from setuptools import setup
 setup(
   name = 'superQuery',         
   packages = ['superQuery'],   
-  version = '2.6',
+  version = '2.61',
   license='MIT',       
   description = 'The Python interface to superQuery',  
   author = 'Eben du Toit',                 

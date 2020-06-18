@@ -111,6 +111,16 @@ except ImportError:
     ),
 )
 
+@magic_arguments.argument(
+    "--log_query_results",
+    type=bool,
+    default=True,
+    help=(
+            "If to print query stats results"
+    ),
+)
+
+
 def _cell_magic(line, query):
     """Underlying function for superquery cell magic
     Note:
@@ -131,6 +141,8 @@ def _cell_magic(line, query):
         client = Client(usernameDriveAuth=args.username)
     else:
         client = Client()
+
+    client.set_log_query_results(args.log_query_results)
     
     # Strip input query
     QUERY = query.strip()
