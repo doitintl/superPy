@@ -183,6 +183,9 @@ class Client(object):
     def set_log_query_results(self, log_query):
         self._log_query_results = log_query
         return self
+    
+    def get_log_query_results(self):
+        return self._log_query_results
 
     def query(self,
               sql,
